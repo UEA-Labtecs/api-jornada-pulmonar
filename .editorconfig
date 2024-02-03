@@ -1,0 +1,33 @@
+# Configurações padrão
+root = true
+
+# Estilos comuns para arquivos de texto
+[*]
+charset = utf-8
+end_of_line = lf
+indent_style = space
+indent_size = 2
+insert_final_newline = true
+trim_trailing_whitespace = true
+
+# Configurações específicas por tipo de arquivo
+[*.md]  # Exemplo para arquivos Markdown (.md)
+trim_trailing_whitespace = false  # Desabilita a remoção de espaços em branco no final das linhas
+
+
+/*
+Explicação das Opções:
+root = true: Indica que o arquivo .editorconfig é o arquivo raiz e as definições devem ser aplicadas a todos os arquivos do projeto, incluindo subdiretórios.
+
+[*]: Configurações aplicadas a todos os tipos de arquivos no projeto. No exemplo acima, definições como o uso de UTF-8, estilo de indentação, tamanho da indentação, inserção de uma nova linha final, etc., são aplicadas a todos os arquivos.
+
+[*.md]: Essas configurações são aplicadas especificamente a arquivos com a extensão .md (Markdown) no projeto.
+
+3. Configurações Comuns:
+charset: Define a codificação de caracteres.
+end_of_line: Especifica o tipo de quebra de linha.
+indent_style: Define o estilo de indentação (espaço ou tab).
+indent_size: Tamanho da indentação em espaços.
+insert_final_newline: Adiciona uma nova linha no final do arquivo, se não existir.
+trim_trailing_whitespace: Remove espaços em branco no final das linhas.
+*/

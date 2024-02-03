@@ -1,0 +1,12 @@
+version: "3.9"
+
+services:
+  todo:
+    container_name: todo
+    build: ./apps/todo
+    restart: always
+    volumes:
+      - ./libs:/app/libs
+    env_file: ./.env
+    ports:
+      - ${PORT}:${PORT}
