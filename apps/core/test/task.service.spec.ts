@@ -1,15 +1,15 @@
 import { Test, TestingModule } from '@nestjs/testing';
-import { TaskService } from '../src/task/application/task.use-case';
+import { QuestionsUseCase } from '../src/jornada-pulmonar/application/questions/question.use-case';
 
-describe('TaskService', () => {
-  let service: TaskService;
+describe('QuestionsUseCase', () => {
+  let service: QuestionsUseCase;
 
   beforeEach(async () => {
     const module: TestingModule = await Test.createTestingModule({
-      providers: [TaskService],
+      providers: [QuestionsUseCase],
     }).compile();
 
-    service = module.get<TaskService>(TaskService);
+    service = module.get<QuestionsUseCase>(QuestionsUseCase);
   });
 
   it('should be defined', () => {

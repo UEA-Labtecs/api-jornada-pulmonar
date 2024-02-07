@@ -1,9 +1,10 @@
 import { SwaggerModule, DocumentBuilder } from '@nestjs/swagger';
 import { NestFactory } from '@nestjs/core';
-import { TaskModule } from './common/modules/task.module';
+import { QuestionModule } from './common/modules/questions.module';
+import { AppModule } from './common/modules/app.module';
 
 async function bootstrap() {
-  const app = await NestFactory.create(TaskModule);
+  const app = await NestFactory.create(AppModule);
   // https://docs.nestjs.com/faq/global-prefix
   app.setGlobalPrefix('api/v1');
 
@@ -15,7 +16,7 @@ async function bootstrap() {
     .addTag('Users', 'Métodos para o gerenciamento de usuários')
     .addTag('Properties', 'Métodos para o gerenciamento de propriedades')
     .addTag('Devices', 'Métodos para o gerenciamento de dispositivos')
-    .addTag('Tasks', 'Métodos para o gerenciamento de tarefas')
+    .addTag('Questions', 'Métodos para o gerenciamento de tarefas')
     .build();
 
   const document = SwaggerModule.createDocument(app, config);

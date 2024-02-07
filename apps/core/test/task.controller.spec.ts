@@ -1,17 +1,17 @@
 import { Test, TestingModule } from '@nestjs/testing';
-import { TaskController } from '../src/task/presentation/task.controller';
-import { TaskService } from '../src/task/application/task.use-case';
+import { QuestionController } from '../src/jornada-pulmonar/presentation/question.controller';
+import { QuestionsUseCase } from '../src/jornada-pulmonar/application/questions/question.use-case';
 
-describe('TaskController', () => {
-  let controller: TaskController;
+describe('QuestionController', () => {
+  let controller: QuestionController;
 
   beforeEach(async () => {
     const module: TestingModule = await Test.createTestingModule({
-      controllers: [TaskController],
-      providers: [TaskService],
+      controllers: [QuestionController],
+      providers: [QuestionsUseCase],
     }).compile();
 
-    controller = module.get<TaskController>(TaskController);
+    controller = module.get<QuestionController>(QuestionController);
   });
 
   it('should be defined', () => {
