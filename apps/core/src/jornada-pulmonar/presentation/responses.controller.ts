@@ -1,17 +1,19 @@
 import { Controller, Get, Param, Post, Patch, Body, UsePipes, ValidationPipe, Query } from '@nestjs/common';
 import { ApiTags } from '@nestjs/swagger';
-import { makeCreateModuleController } from '../infra/modules/make-create-modules-controller.factory';
+import { makeCreateResponsesController } from '../infra/responses/make-create-responses-controller.factory';
 
 
-@ApiTags('Modules')
+@ApiTags('Responses')
 @UsePipes(new ValidationPipe({ forbidNonWhitelisted: true, whitelist: true }))
-@Controller('modules')
-export class ModulesController {
+@Controller('responses')
+export class ResponsesController {
 
   @Post()
   create(@Body() body: any) {
-    const create = makeCreateModuleController(body);
+    const create = makeCreateResponsesController(body);
     return create.handle();
   }
 
+
 }
+

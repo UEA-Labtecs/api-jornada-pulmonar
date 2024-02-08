@@ -1,5 +1,5 @@
 
-import { QuestionsUseCase } from '../../application/questions/question.use-case';
+import { QuestionsUseCase } from '../../../application/questions/question.use-case';
 
 export class DeleteQuestionController {
   constructor(

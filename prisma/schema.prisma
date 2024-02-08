@@ -12,7 +12,7 @@ model Users {
   name      String
   email     String    @unique
   password  String
-  role      String // "Professor" or "Student"
+  role      String
   modules   Modules[]
   createdAt DateTime  @default(now())
   updatedAt DateTime?
@@ -21,7 +21,7 @@ model Users {
 model Modules {
   id        String      @id @unique
   title     String
-  user      Users       @relation(fields: [userId], references: [id])
+  user      Users       @relation(fields: [userId], references: [id], onDelete: Cascade)
   userId    String
   questions Questions[]
   createdAt DateTime    @default(now())
@@ -31,8 +31,8 @@ model Modules {
 model Questions {
   id           String      @id @unique
   title        String
-  alternatives Options[]
-  module       Modules     @relation(fields: [moduleId], references: [id])
+  alternatives Options[]   @relation("QuestionOptions")
+  module       Modules     @relation(fields: [moduleId], references: [id], onDelete: Cascade)
   moduleId     String
   Response     Responses[]
   createdAt    DateTime    @default(now())
@@ -42,8 +42,7 @@ model Questions {
 model Options {
   id         String      @id @unique
   content    String
-  correct    Boolean
-  question   Questions   @relation(fields: [questionId], references: [id])
+  question   Questions   @relation("QuestionOptions", fields: [questionId], references: [id], onDelete: Cascade)
   questionId String
   Response   Responses[]
   createdAt  DateTime    @default(now())
@@ -52,9 +51,9 @@ model Options {
 
 model Responses {
   id         String    @id @unique
-  choice     Options   @relation(fields: [choiceId], references: [id])
+  choice     Options   @relation(fields: [choiceId], references: [id], onDelete: Cascade)
   choiceId   String
-  question   Questions @relation(fields: [questionId], references: [id])
+  question   Questions @relation(fields: [questionId], references: [id], onDelete: Cascade)
   questionId String
   createdAt  DateTime  @default(now())
   updatedAt  DateTime?

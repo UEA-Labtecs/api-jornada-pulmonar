@@ -1,4 +1,4 @@
-import { UsersUseCase } from "../../application/users/users.use-case";
+import { UsersUseCase } from "../../../application/users/users.use-case";
 
 
 export class CreateUsersController {

@@ -1,4 +1,4 @@
-import { ModulesUseCase } from "../../application/modules/modules.use-case";
+import { ModulesUseCase } from "../../../application/modules/modules.use-case";
 
 
 export class CreateModuleController {

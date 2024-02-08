@@ -12,7 +12,6 @@ export class UsersUseCase implements IUsersUseCase {
 
   async createUser(data: Users) {
     //regra de negócio
-    console.log("=====use case >>", data)
     return await this.usersRepository.create(new Users(data))
   };
 

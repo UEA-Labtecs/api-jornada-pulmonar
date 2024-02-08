@@ -1,4 +1,4 @@
-import { Controller, Get, Param, Post, Patch, Body, UsePipes, ValidationPipe, Query } from '@nestjs/common';
+import { Controller, Get, Param, Post, Patch, Body, UsePipes, ValidationPipe, Query, Delete } from '@nestjs/common';
 import { CreateQuestionDto } from './dto/create-task.dto';
 import { ApiTags } from '@nestjs/swagger';
 import { makeCreateQuestionController } from '../infra/questions/make-create-task-controller.factory';
@@ -38,8 +38,8 @@ export class QuestionController {
 
 
 
-  @Patch('soft-delete/:id')
-  softDelete(@Param('id') id: string) {
+  @Delete(':id')
+  delete(@Param('id') id: string) {
     const deleted = makeDeleteQuestionController(id)
     return deleted.handle();
   }
