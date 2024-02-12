@@ -5,6 +5,4 @@ export class OptionsRepository extends BaseRepository<Options> {
   constructor() {
     super("Options")
   }
-
-
 }

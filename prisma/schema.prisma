@@ -14,6 +14,7 @@ model Users {
   password  String
   role      String
   modules   Modules[]
+  score     Int       @default(0)
   createdAt DateTime  @default(now())
   updatedAt DateTime?
 }
@@ -50,11 +51,12 @@ model Options {
 }
 
 model Responses {
-  id         String    @id @unique
-  choice     Options   @relation(fields: [choiceId], references: [id], onDelete: Cascade)
-  choiceId   String
-  question   Questions @relation(fields: [questionId], references: [id], onDelete: Cascade)
-  questionId String
-  createdAt  DateTime  @default(now())
-  updatedAt  DateTime?
+  id           String    @id @unique
+  choice       Options   @relation(fields: [choiceId], references: [id], onDelete: Cascade)
+  choiceId     String
+  question     Questions @relation(fields: [questionId], references: [id], onDelete: Cascade)
+  questionId   String
+  responseTime Int
+  createdAt    DateTime  @default(now())
+  updatedAt    DateTime?
 }

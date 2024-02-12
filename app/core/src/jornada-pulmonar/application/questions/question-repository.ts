@@ -5,6 +5,4 @@ export class QuestionRepository extends BaseRepository<Questions>  {
   constructor() {
     super("Questions")
   }
-
-
 }
