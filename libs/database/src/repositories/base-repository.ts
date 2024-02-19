@@ -18,12 +18,24 @@ export class BaseRepository<T extends IBaseEntity> implements BaseRepositoryAdap
     return createdItem as T;
   }
 
-  async findById(id: string | number): Promise<T | null> {
+  async findById(id: string | number, includeRelations?: string[]): Promise<T | null> {
+    const includeObject: Record<string, boolean> = {};
+
+    if (includeRelations) {
+      for (const relation of includeRelations) {
+        includeObject[relation] = true;
+      }
+    }
+
     const item = await prisma[this.model].findUnique({
       where: { id: id },
+      include: includeObject,
     });
+
     return item as T | null;
   }
+
+
 
   async update(id: string, data: T): Promise<T | null> {
     const updatedItem = await prisma[this.model].update({
@@ -45,15 +57,16 @@ export class BaseRepository<T extends IBaseEntity> implements BaseRepositoryAdap
       where: { id: id },
     });
   }
-
-  async findAll(query?: any): Promise<T[]> {
+  async findAll(query?: any, orderBy?: { [key: string]: 'asc' | 'desc' }): Promise<T[]> {
     let whereCondition: Record<string, any> = {};
 
     if (query) {
       whereCondition = query;
     }
+
     const foundItems = await prisma[this.model].findMany({
       where: whereCondition,
+      orderBy: orderBy,
     });
 
     return foundItems as T[];

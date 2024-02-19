@@ -1,4 +1,4 @@
-import { PrismaService } from 'app/core/src/common/services/prisma.service';
+import { PrismaService } from 'apps/core/src/common/services/prisma.service';
 import { IBaseEntity } from '../types/base-entity';
 
 export abstract class BaseRepositoryAdapter<T extends IBaseEntity>  {

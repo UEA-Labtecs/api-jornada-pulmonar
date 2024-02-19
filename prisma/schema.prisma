@@ -8,15 +8,16 @@ datasource db {
 }
 
 model Users {
-  id        String    @id @unique
-  name      String
-  email     String    @unique
-  password  String
-  role      String
-  modules   Modules[]
-  score     Int       @default(0)
-  createdAt DateTime  @default(now())
-  updatedAt DateTime?
+  id            String          @id @unique
+  name          String
+  email         String          @unique
+  password      String
+  role          String
+  modules       Modules[]
+  score         Int             @default(0)
+  createdAt     DateTime        @default(now())
+  updatedAt     DateTime?
+  UserResponses UserResponses[]
 }
 
 model Modules {
@@ -30,33 +31,47 @@ model Modules {
 }
 
 model Questions {
-  id           String      @id @unique
-  title        String
-  alternatives Options[]   @relation("QuestionOptions")
-  module       Modules     @relation(fields: [moduleId], references: [id], onDelete: Cascade)
-  moduleId     String
-  Response     Responses[]
-  createdAt    DateTime    @default(now())
-  updatedAt    DateTime?
+  id            String          @id @unique
+  title         String
+  alternatives  Options[]       @relation("QuestionOptions")
+  module        Modules         @relation(fields: [moduleId], references: [id], onDelete: Cascade)
+  moduleId      String
+  response      Responses?
+  createdAt     DateTime        @default(now())
+  updatedAt     DateTime?
+  responsesId   String?
+  UserResponses UserResponses[]
 }
 
 model Options {
-  id         String      @id @unique
-  content    String
-  question   Questions   @relation("QuestionOptions", fields: [questionId], references: [id], onDelete: Cascade)
-  questionId String
-  Response   Responses[]
-  createdAt  DateTime    @default(now())
-  updatedAt  DateTime?
+  id            String          @id @unique
+  content       String
+  question      Questions       @relation("QuestionOptions", fields: [questionId], references: [id], onDelete: Cascade)
+  questionId    String
+  Response      Responses[]
+  createdAt     DateTime        @default(now())
+  updatedAt     DateTime?
+  UserResponses UserResponses[]
 }
 
 model Responses {
-  id           String    @id @unique
-  choice       Options   @relation(fields: [choiceId], references: [id], onDelete: Cascade)
-  choiceId     String
-  question     Questions @relation(fields: [questionId], references: [id], onDelete: Cascade)
-  questionId   String
-  responseTime Int
-  createdAt    DateTime  @default(now())
-  updatedAt    DateTime?
+  id         String    @id @unique
+  choice     Options   @relation(fields: [choiceId], references: [id], onDelete: Cascade)
+  choiceId   String
+  question   Questions @relation(fields: [questionId], references: [id], onDelete: Cascade)
+  questionId String    @unique
+  createdAt  DateTime  @default(now())
+  updatedAt  DateTime?
+}
+
+model UserResponses {
+  id         String    @id @unique
+  user       Users     @relation(fields: [userId], references: [id])
+  userId     String
+  question   Questions @relation(fields: [questionId], references: [id])
+  questionId String
+  choice     Options   @relation(fields: [choiceId], references: [id])
+  choiceId   String
+  createdAt  DateTime  @default(now())
+  updatedAt  DateTime?
 }

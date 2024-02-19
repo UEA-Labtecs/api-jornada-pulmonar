@@ -8,17 +8,8 @@
     "tsConfigPath": "apps/core/tsconfig.app.json"
   },
   "monorepo": true,
-  "root": "apps/my-app-1",
+  "root": "apps/core",
   "projects": {
-    "my-app-1": {
-      "type": "application",
-      "root": "apps/my-app-1",
-      "entryFile": "main",
-      "sourceRoot": "apps/my-app-1/src",
-      "compilerOptions": {
-        "tsConfigPath": "apps/my-app-1/tsconfig.app.json"
-      }
-    },
     "database": {
       "type": "library",
       "root": "libs/database",
@@ -44,15 +35,6 @@
       "sourceRoot": "apps/core/src",
       "compilerOptions": {
         "tsConfigPath": "apps/core/tsconfig.app.json"
-      }
-    },
-    "logging": {
-      "type": "library",
-      "root": "libs/logging",
-      "entryFile": "index",
-      "sourceRoot": "libs/logging/src",
-      "compilerOptions": {
-        "tsConfigPath": "libs/logging/tsconfig.lib.json"
       }
     }
   }
