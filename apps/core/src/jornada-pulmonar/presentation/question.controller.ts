@@ -8,6 +8,7 @@ import { makeFindAllQuestionController } from '../infra/questions/make-find-all-
 import { makeDeleteQuestionController } from '../infra/questions/make-delete-task-controller.factory';
 import { IsPublic } from '../../auth/decorators/is-public.decorator';
 import { JwtAuthGuard } from '../../auth/guards/jwt-auth.guard';
+import { makeCreateQuestionOnModuleController } from '../infra/questions/make-create-question-on-module-controller.factory';
 
 
 @ApiTags('Questions')
@@ -20,6 +21,14 @@ export class QuestionController {
   @Post()
   create(@Body() body: any) {
     const create = makeCreateQuestionController(body);
+    return create.handle();
+  }
+
+  @IsPublic()
+  @UseGuards(JwtAuthGuard)
+  @Post('-on-module')
+  createOnModule(@Body() body: any) {
+    const create = makeCreateQuestionOnModuleController(body);
     return create.handle();
   }
 

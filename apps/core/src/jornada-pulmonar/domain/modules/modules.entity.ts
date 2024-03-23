@@ -7,8 +7,8 @@ import { Questions } from "../questions/question.entity";
 export class Modules extends IBaseEntity {
   id: string;
   title: string;
-  professor: Users;
-  professorId: string;
+  teacher: Users;
+  userId: string;
   questions?: Questions[];
   createdAt: Date;
   updatedAt?: Date;

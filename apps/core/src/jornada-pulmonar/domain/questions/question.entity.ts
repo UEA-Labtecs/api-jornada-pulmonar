@@ -4,11 +4,11 @@ import { Modules } from "../modules/modules.entity";
 import { Responses } from "../responses/responses.entity";
 
 export class Questions extends IBaseEntity {
-  content: string;
+  title: string;
   options?: Options[];
-  correctOption: Options;
+  correctOption?: Options;
   moduleId: string;
-  module: Modules;
+  module?: Modules;
   response?: Responses;
 }
 

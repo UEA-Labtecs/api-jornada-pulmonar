@@ -11,7 +11,8 @@ import { JwtAuthGuard } from '../../auth/guards/jwt-auth.guard';
 @Controller('options')
 export class OptionsController {
 
-  @UseGuards(JwtAuthGuard)
+  @IsPublic()
+  // @UseGuards(JwtAuthGuard)
   @Post()
   create(@Body() body: any) {
     const create = makeCreateOptionsController(body);

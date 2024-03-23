@@ -1,14 +1,13 @@
 
 import { QuestionsUseCase } from '../../../application/questions/question.use-case';
 
-export class CreateQuestionController {
+export class CreateQuestionOnModuleController {
   constructor(
     private readonly service: QuestionsUseCase,
     private readonly body: any,
   ) { }
   async handle() {
-    console.log(this.body)
-    const response = await this.service.createQuestion(this.body);
+    const response = await this.service.createQuestinModule(this.body);
     return response
   }
 }

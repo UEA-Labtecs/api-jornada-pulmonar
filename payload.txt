@@ -1,0 +1,114 @@
+    payload - Teacher
+
+Login: {
+  email: "fernanda@gmail.com", 
+  password: "1234@Nanda"
+  };
+
+createAccount: { 
+  email: "fernanda@gmail.com",
+  name: "fernnada", 
+  password: "1234@Nanda"
+  role: 'student | teacher'
+  };
+  
+
+createQuestion: {
+   Weight: "10",
+   alternatives: [{description: "alternativa 1", value: "alternativa 1",correctAlternative: false}, {description:         
+   "alternativa 2 ", value: "alternativa 2 ", correctAlternative: true}, {}], 
+   question: "pergunta 1", 
+   titleUnit: "unidade 1 ",
+   
+   
+   
+   photo: string,
+   audio: string,
+   descriptionImage: string
+   };
+
+
+ListUnit: {
+  id: string, 
+  quantityQuestions: number, 
+  unitName: string, 
+  description: string
+  };
+  
+ListRanking: {
+  id: string,
+  name: string, 
+  photo: string, 
+  points: number
+  }; // -> ordernar pelas 3 melhores pontuações
+   
+ ListQestion : {
+   id: string,
+   Weight: string,
+   alternatives: [{description: "alternativa 1", value: "alternativa 1"}, {description:         
+   "alternativa 2 ", value: "alternativa 2 "}, {correctAlternative: "alternativa 2 "}], 
+   question: "pergunta 1", 
+   titleUnit: "unidade 1 ",
+   photo: string,
+   audio: string,
+   descriptionImage: string
+ };
+ deleteQuestion: {id: string}
+ 
+ // não vai ter editar (sem tempo)
+ 
+Paylod - Student
+
+ListUnit: {
+  title: string
+  totalQuest: number
+  totalFinished: number
+  progress: decimal
+  idUnit: string
+}; 
+
+// 1 - preciso de uma listagem de unidades pra saber quantas unidades o aluno tem para responder e quantas questões dessa unidade ele ja respondeu;
+
+ // 2 - preciso de filtro para acessar as questões de uma unidade especifica. nesse filtro vou precisar receber os seguintes atributos
+ 
+ filter1:(idUnit:string) {
+   return {
+     nameQuestion: string // a qual questão se refere ex: (questão 1)
+     finished: boolean // se ja foi respondida ou não
+     idQuestion: string // vou precisar pra acessar outro filtro
+   }
+ };
+ 
+ // 3 - preciso de um filtro pra listar as questões previamente cadastradas pelo prof, como mostra no exemplo abaixo;
+ 
+ filter1:(idQuestion:string) {
+   return {
+   alternatives: [{description: "alternativa 1", value: "alternativa 1"}, {description:         
+   "alternativa 2 ", value: "alternativa 2 "}, {correctAlternative: "alternativa 2 "}], 
+   question: "pergunta 1", 
+   titleUnit: "unidade 1 ",
+   photo: string,
+   audio: string,
+   descriptionImage: string
+   }
+ };
+ 
+ ListRanking: {
+  id: string,
+  name: string, 
+  photo: string, 
+  points: number
+  }; // -> ordernar pelas 3 melhores pontuações
+  
+// atualizar senha 
+
+password: {
+  currentKey: string,
+  newKey: string,
+  photo: string / opcional
+}
+
+liatUser: {
+  name: string,
+  email:string
+}

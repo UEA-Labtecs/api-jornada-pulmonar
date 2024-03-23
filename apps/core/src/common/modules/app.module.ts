@@ -9,9 +9,10 @@ import { APP_GUARD } from '@nestjs/core';
 import { JwtAuthGuard } from '../../auth/guards/jwt-auth.guard';
 import { AppService } from '../services/app.service';
 import { UserResponsesModule } from './userResponses.module';
+import { UploadModule } from './upload.module';
 
 @Module({
-  imports: [QuestionModule, UsersModule, ModulesModule, OptionsModule, ResponsesModule, UserResponsesModule, AuthModule],
+  imports: [QuestionModule, UsersModule, ModulesModule, OptionsModule, ResponsesModule, UserResponsesModule, UploadModule, AuthModule],
   providers: [
     AppService,
     {
