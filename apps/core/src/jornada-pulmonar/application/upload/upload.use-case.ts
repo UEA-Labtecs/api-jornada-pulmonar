@@ -31,7 +31,7 @@ export class UploadsUseCase {
       throw new Error(error.message);
     }
 
-    return data;
+    return { fileUrl: data.signedUrl };
   }
 
 }
