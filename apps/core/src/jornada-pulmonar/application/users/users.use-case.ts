@@ -34,11 +34,9 @@ export class UsersUseCase implements IUsersUseCase {
     if (questionId == question.response.questionId && optionId == question.response.choiceId) {
       const user = await this.usersRepository.findById(userId)
       // salvar registro das resposta do usuario
-      console.log(new UserResponses({ choiceId: optionId, questionId, userId, }))
       await this.userResponsesRepository.create(new UserResponses({ choiceId: optionId, questionId, userId, }))
 
       await this.usersRepository.update(user.id, { ...user, score: user.score + pontos })
-      console.log(pontos)
       return {
         message: 'respota correta',
         pontuacao: pontos
@@ -57,7 +55,6 @@ export class UsersUseCase implements IUsersUseCase {
       password: await bcrypt.hash(data.password, 10),
     };
 
-    console.log(new Users(user))
 
     const response = await this.usersRepository.create(new Users(user))
     return {

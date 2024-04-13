@@ -8,6 +8,7 @@ import { OptionsRepository } from '../options/options-repository';
 import { Options } from '../../domain/options/options.entity';
 import { ResponsesRepository } from '../response/response-repository';
 import { Responses } from '../../domain/responses/responses.entity';
+import { UploadsUseCase } from '../upload/upload.use-case';
 
 @Injectable()
 export class QuestionsUseCase implements IQuestionsUseCase {
@@ -17,24 +18,27 @@ export class QuestionsUseCase implements IQuestionsUseCase {
     private readonly ModuleRepository?: ModulesRepository,
     private readonly OptionRepository?: OptionsRepository,
     private readonly ResponseRepository?: ResponsesRepository,
+    private readonly uploadUseCase?: UploadsUseCase,
   ) { }
 
-  async createQuestion(data: Questions) {
-    //regra de negócio
-    return await this.QuestionRepository.create(new Questions(data))
-  };
 
-  async createQuestinModule(data: any) {
+
+  async createQuestinModule(file: any, data: any) {
     const alternatives = [];
+    const payload = JSON.parse(data.payload)
 
-    const module = await this.ModuleRepository.create(new Modules({ title: data.titleUnit, userId: data.userId }));
-
+    await this.uploadUseCase.upload(file)
+    const module = await this.ModuleRepository.create(new Modules({ title: payload.titleUnit, userId: payload.userId }));
+    const imgNameUrl = file.originalname + '$' + payload.question
     const question = await this.QuestionRepository.create(new Questions({
-      title: data.question,
-      moduleId: module.id
+      title: payload.question,
+      moduleId: module.id,
+      audioUrl: payload.audioUrl,
+      imgNameUrl: imgNameUrl,
+      weight: payload.weight
     }));
 
-    await Promise.all(data.alternatives.map(async (alternative) => {
+    await Promise.all(payload.alternatives.map(async (alternative) => {
       const ops = await this.OptionRepository.create(new Options({
         content: alternative.description,
         questionId: question.id
@@ -48,7 +52,7 @@ export class QuestionsUseCase implements IQuestionsUseCase {
     }));
 
 
-    return { module, question, alternatives };
+    return { file: { name: file.originalname }, payload };
   }
 
 
@@ -66,4 +70,9 @@ export class QuestionsUseCase implements IQuestionsUseCase {
     //regra de negócio
     return await this.QuestionRepository.delete(id)
   }
+
+  async createQuestion(data: Questions) {
+    //regra de negócio
+    return await this.QuestionRepository.create(new Questions(data))
+  };
 }

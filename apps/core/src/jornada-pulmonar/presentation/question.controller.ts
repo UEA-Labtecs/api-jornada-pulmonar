@@ -1,4 +1,4 @@
-import { Controller, Get, Param, Post, Patch, Body, UsePipes, ValidationPipe, Query, Delete, UseGuards } from '@nestjs/common';
+import { Controller, Get, Param, Post, Patch, Body, UsePipes, ValidationPipe, Query, Delete, UseGuards, UseInterceptors, UploadedFile } from '@nestjs/common';
 import { CreateQuestionDto } from './dto/create-task.dto';
 import { ApiTags } from '@nestjs/swagger';
 import { makeCreateQuestionController } from '../infra/questions/make-create-task-controller.factory';
@@ -9,6 +9,8 @@ import { makeDeleteQuestionController } from '../infra/questions/make-delete-tas
 import { IsPublic } from '../../auth/decorators/is-public.decorator';
 import { JwtAuthGuard } from '../../auth/guards/jwt-auth.guard';
 import { makeCreateQuestionOnModuleController } from '../infra/questions/make-create-question-on-module-controller.factory';
+import { FileInterceptor } from '@nestjs/platform-express';
+import { FileDTO } from './dto/upload.dto';
 
 
 @ApiTags('Questions')
@@ -26,9 +28,10 @@ export class QuestionController {
 
   @IsPublic()
   @UseGuards(JwtAuthGuard)
-  @Post('-on-module')
-  createOnModule(@Body() body: any) {
-    const create = makeCreateQuestionOnModuleController(body);
+  @Post('on-module')
+  @UseInterceptors(FileInterceptor('file'))
+  createOnModule(@UploadedFile() file: FileDTO, @Body() payload: any) {
+    const create = makeCreateQuestionOnModuleController(file, payload);
     return create.handle();
   }
 

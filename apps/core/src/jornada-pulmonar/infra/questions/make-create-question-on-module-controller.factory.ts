@@ -6,12 +6,15 @@ import { ModulesRepository } from '../../application/modules/modules-repository'
 import { CreateQuestionOnModuleController } from '../../presentation/handle/questions/create-question-on-module.handle';
 import { OptionsRepository } from '../../application/options/options-repository';
 import { ResponsesRepository } from '../../application/response/response-repository';
+import { UploadsUseCase } from '../../application/upload/upload.use-case';
 
-export const makeCreateQuestionOnModuleController = (body: CreateQuestionDto) => {
+export const makeCreateQuestionOnModuleController = (file: any, payload: any,) => {
   const repository = new QuestionRepository();
   const repositoryMod = new ModulesRepository();
   const repositoryOp = new OptionsRepository();
   const repositoryRes = new ResponsesRepository();
-  const service = new QuestionsUseCase(repository, repositoryMod, repositoryOp, repositoryRes);
-  return new CreateQuestionOnModuleController(service, body);
+
+  const uploadeUseCase = new UploadsUseCase();
+  const service = new QuestionsUseCase(repository, repositoryMod, repositoryOp, repositoryRes, uploadeUseCase);
+  return new CreateQuestionOnModuleController(service, file, payload);
 };

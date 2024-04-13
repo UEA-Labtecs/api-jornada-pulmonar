@@ -1,7 +1,7 @@
 export type FileDTO = {
-  fieldname: string;
+  fieldname?: string;
   originalname: string;
-  mimetype: string;
+  mimetype?: string;
   buffer: Buffer;
-  size: number;
+  size?: number;
 };

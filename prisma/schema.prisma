@@ -33,6 +33,9 @@ model Modules {
 model Questions {
   id            String          @id @unique
   title         String
+  audioUrl      String
+  imgNameUrl    String
+  weight        Int
   alternatives  Options[]       @relation("QuestionOptions")
   module        Modules         @relation(fields: [moduleId], references: [id], onDelete: Cascade)
   moduleId      String

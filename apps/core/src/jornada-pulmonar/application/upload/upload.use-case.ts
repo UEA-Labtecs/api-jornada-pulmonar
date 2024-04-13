@@ -18,7 +18,6 @@ export class UploadsUseCase {
       .upload(file.originalname, file.buffer, {
         upsert: true,
       });
-
     return data;
   }
 
