@@ -7,7 +7,6 @@ export class CreateQuestionController {
     private readonly body: any,
   ) { }
   async handle() {
-    console.log(this.body)
     const response = await this.service.createQuestion(this.body);
     return response
   }

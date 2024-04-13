@@ -17,7 +17,7 @@ model Users {
   score         Int             @default(0)
   createdAt     DateTime        @default(now())
   updatedAt     DateTime?
-  UserResponses UserResponses[]
+  userResponses UserResponses[]
 }
 
 model Modules {
@@ -43,7 +43,7 @@ model Questions {
   createdAt     DateTime        @default(now())
   updatedAt     DateTime?
   responsesId   String?
-  UserResponses UserResponses[]
+  userResponses UserResponses[]
 }
 
 model Options {
@@ -54,7 +54,7 @@ model Options {
   Response      Responses[]
   createdAt     DateTime        @default(now())
   updatedAt     DateTime?
-  UserResponses UserResponses[]
+  userResponses UserResponses[]
 }
 
 model Responses {
@@ -69,6 +69,7 @@ model Responses {
 
 model UserResponses {
   id         String    @id @unique
+  isCorrect  Boolean
   user       Users     @relation(fields: [userId], references: [id])
   userId     String
   question   Questions @relation(fields: [questionId], references: [id])

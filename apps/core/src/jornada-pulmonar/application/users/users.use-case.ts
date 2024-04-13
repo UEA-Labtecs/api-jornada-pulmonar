@@ -27,14 +27,22 @@ export class UsersUseCase implements IUsersUseCase {
 
   async verifyResponse(optionId: string, questionId: string, userId: string, time: number): Promise<any> {
     const pontos = calcularPontuacao(time)
-
     const question: Questions = await this.questionsRepository.findById(questionId, ['response'])
+    const responsesUser = await this.usersRepository.findById(userId, ['userResponses'])
 
+    for (const item of responsesUser.userResponses) {
+      console.log(item.isCorrect == true)
+      if (item.isCorrect == true) {
+        return {
+          message: 'questão já respondida',
+        }
+      }
+    }
 
     if (questionId == question.response.questionId && optionId == question.response.choiceId) {
       const user = await this.usersRepository.findById(userId)
       // salvar registro das resposta do usuario
-      await this.userResponsesRepository.create(new UserResponses({ choiceId: optionId, questionId, userId, }))
+      await this.userResponsesRepository.create(new UserResponses({ choiceId: optionId, questionId, userId, isCorrect: true }))
 
       await this.usersRepository.update(user.id, { ...user, score: user.score + pontos })
       return {
@@ -43,7 +51,7 @@ export class UsersUseCase implements IUsersUseCase {
       }
     }
     else {
-      await this.userResponsesRepository.create(new UserResponses({ choiceId: optionId, questionId, userId }))
+      await this.userResponsesRepository.create(new UserResponses({ choiceId: optionId, questionId, userId, isCorrect: false }))
       return { message: 'respota incorreta' }
     }
   };

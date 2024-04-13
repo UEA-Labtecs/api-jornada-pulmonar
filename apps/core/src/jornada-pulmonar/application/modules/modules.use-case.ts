@@ -20,8 +20,9 @@ export class ModulesUseCase implements IModulesUseCase {
     return await this.modulesRepository.update(id, data)
   };
 
-  async findAllModule(query): Promise<Modules[]> {
+  async findAllModule(query: string): Promise<Modules[]> {
     //regra de negócio
+    console.log(query)
     return this.modulesRepository.findAll(query)
   }
 
