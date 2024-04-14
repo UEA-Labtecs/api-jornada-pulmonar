@@ -1,9 +1,9 @@
 version: "3.9"
 
 services:
-  todo:
-    container_name: todo
-    build: ./apps/todo
+  pulmao:
+    container_name: pulmao
+    build: ./apps/pulmao
     restart: always
     volumes:
       - ./libs:/app/libs
