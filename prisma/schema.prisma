@@ -12,6 +12,7 @@ model Users {
   name          String
   email         String          @unique
   password      String
+  imgNameUrl    String
   role          String
   modules       Modules[]
   score         Int             @default(0)

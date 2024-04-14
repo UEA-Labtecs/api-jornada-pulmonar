@@ -5,6 +5,7 @@ import { UsersUseCase } from '../../jornada-pulmonar/application/users/users.use
 import { QuestionRepository } from '../../jornada-pulmonar/application/questions/question-repository';
 import { UserResponsesUseCase } from '../../jornada-pulmonar/application/user-reponse/user-response.use-case';
 import { UserResponsesRepository } from '../../jornada-pulmonar/application/user-reponse/user-response-repository';
+import { UploadsUseCase } from '../../jornada-pulmonar/application/upload/upload.use-case';
 
 @Module({
   imports: [],
@@ -14,7 +15,8 @@ import { UserResponsesRepository } from '../../jornada-pulmonar/application/user
     QuestionRepository,
     UsersUseCase,
     UserResponsesUseCase,
-    UserResponsesRepository
+    UserResponsesRepository,
+    UploadsUseCase
   ],
   exports: [UsersUseCase]
 })

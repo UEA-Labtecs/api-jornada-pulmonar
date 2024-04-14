@@ -5,6 +5,8 @@ import { Responses } from "../responses/responses.entity";
 
 export class Questions extends IBaseEntity {
   title: string;
+  weight: number;
+  imgNameUrl: string
   options?: Options[];
   correctOption?: Options;
   moduleId: string;

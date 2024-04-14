@@ -1,4 +1,5 @@
 import { QuestionsUseCase } from "../../../application/questions/question.use-case";
+import { UploadsUseCase } from "../../../application/upload/upload.use-case";
 
 
 export class FindAllQuestionController {

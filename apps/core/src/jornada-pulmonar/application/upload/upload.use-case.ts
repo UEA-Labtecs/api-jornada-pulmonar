@@ -24,7 +24,7 @@ export class UploadsUseCase {
   async getFileURL(fileName: string) {
     const { data, error } = await this.supabase.storage
       .from('pulmao')
-      .createSignedUrl(fileName, 60); // Tempo de expiração em segundos
+      .createSignedUrl(fileName, 6000); // Tempo de expiração em segundos
 
     if (error) {
       throw new Error(error.message);

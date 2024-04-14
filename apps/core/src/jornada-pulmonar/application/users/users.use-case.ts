@@ -8,6 +8,9 @@ import { Questions } from '../../domain/questions/question.entity';
 import { QuestionRepository } from '../questions/question-repository';
 import { UserResponses } from '../../domain/user-responses/user-responses.entity';
 import { UserResponsesRepository } from '../user-reponse/user-response-repository';
+import { FileDTO } from '../../presentation/dto/upload.dto';
+import { UploadsUseCase } from '../upload/upload.use-case';
+import { v4 as uuid } from 'uuid'
 
 @Injectable()
 export class UsersUseCase implements IUsersUseCase {
@@ -16,23 +19,31 @@ export class UsersUseCase implements IUsersUseCase {
     private readonly usersRepository: UsersRepository,
     private readonly questionsRepository?: QuestionRepository,
     private readonly userResponsesRepository?: UserResponsesRepository,
+    private readonly uploadUseCase?: UploadsUseCase,
 
   ) { }
 
-  async ranking(): Promise<Users[]> {
-    return await this.usersRepository.findAll({}, {
+  async ranking(query): Promise<Users[]> {
+    const users = await this.usersRepository.findAll(query, {
       score: 'desc',
     });
+
+    await Promise.all(users.map(async (user) => {
+      const fileUrl = await this.uploadUseCase.getFileURL(user.imgNameUrl)
+      user.imgNameUrl = fileUrl.fileUrl
+    }))
+
+    return users
   }
 
   async verifyResponse(optionId: string, questionId: string, userId: string, time: number): Promise<any> {
-    const pontos = calcularPontuacao(time)
     const question: Questions = await this.questionsRepository.findById(questionId, ['response'])
     const responsesUser = await this.usersRepository.findById(userId, ['userResponses'])
 
+    const pontos = calcularPontuacao(time, question.weight)
+
     for (const item of responsesUser.userResponses) {
-      console.log(item.isCorrect == true)
-      if (item.isCorrect == true) {
+      if (questionId === item.questionId && item.isCorrect == true) {
         return {
           message: 'questão já respondida',
         }
@@ -44,10 +55,11 @@ export class UsersUseCase implements IUsersUseCase {
       // salvar registro das resposta do usuario
       await this.userResponsesRepository.create(new UserResponses({ choiceId: optionId, questionId, userId, isCorrect: true }))
 
-      await this.usersRepository.update(user.id, { ...user, score: user.score + pontos })
+      await this.usersRepository.update(user.id, { ...user, score: user.score + pontos - (responsesUser.userResponses.length * 2) })
+
       return {
         message: 'respota correta',
-        pontuacao: pontos
+        pontuacao: pontos - (responsesUser.userResponses.length * 2)
       }
     }
     else {
@@ -56,19 +68,25 @@ export class UsersUseCase implements IUsersUseCase {
     }
   };
 
-  async createUser(data: Users) {
+  async createUser(file: FileDTO, data: any) {
     //regra de negócio
+
+    const payload = JSON.parse(data.payload);
+
     const user = {
-      ...data,
-      password: await bcrypt.hash(data.password, 10),
+      ...payload,
+      password: await bcrypt.hash(payload.password, 10),
+      imgNameUrl: payload.name + uuid()
     };
 
 
     const response = await this.usersRepository.create(new Users(user))
+    await this.uploadUseCase.upload({ ...file, originalname: user.imgNameUrl });
     return {
       ...response,
       password: undefined,
     };
+
   };
 
   async updateUser(id: string, data: Users) {
@@ -78,7 +96,14 @@ export class UsersUseCase implements IUsersUseCase {
 
   async findAllUser(query): Promise<Users[]> {
     //regra de negócio
-    return this.usersRepository.findAll(query)
+    const users = await this.usersRepository.findAll(query)
+
+    await Promise.all(users.map(async (user) => {
+      const fileUrl = await this.uploadUseCase.getFileURL(user.imgNameUrl)
+      user.imgNameUrl = fileUrl.fileUrl
+    }))
+
+    return users
   }
 
   async findByEmail(email): Promise<Users> {

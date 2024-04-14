@@ -1,4 +1,4 @@
-export function calcularPontuacao(tempoEmMilissegundos: number): number {
+export function calcularPontuacao(tempoEmMilissegundos: number, pesoQuestao: number): number {
   // Defina os limites de tempo e pontuação conforme necessário
   const limiteSuperior = 120000; // 2 minutos
   const limiteInferior = 1000;  // 1 segundo
@@ -6,9 +6,9 @@ export function calcularPontuacao(tempoEmMilissegundos: number): number {
   // Garanta que o tempo esteja dentro dos limites
   const tempoNormalizado = Math.max(Math.min(tempoEmMilissegundos, limiteSuperior), limiteInferior);
 
-  // Calcule a pontuação com base na lógica desejada
-  const pontuacao = (limiteSuperior - tempoNormalizado) / (limiteSuperior - limiteInferior);
+  // Calcule a pontuação com base na lógica desejada e no peso da questão
+  const pontuacao = (limiteSuperior - tempoNormalizado) / (limiteSuperior - limiteInferior) * pesoQuestao;
 
   // Arredonde a pontuação para evitar casas decimais longas
-  return Math.round(pontuacao * 1000);
+  return Math.round(pontuacao * 100);
 }
