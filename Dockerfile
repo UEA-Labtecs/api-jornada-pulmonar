@@ -1,10 +1,20 @@
-# syntax=docker/dockerfile:1
-FROM node:18.13.0
-WORKDIR /code
+# Use a imagem oficial do Node.js como base
+FROM node:lts
+
+# Defina o diretório de trabalho no contêiner
+WORKDIR /app
+
+# Copie o arquivo package.json e package-lock.json para o diretório de trabalho
 COPY package*.json ./
-COPY prisma ./prisma/
-RUN npm install
-ARG PORT
-EXPOSE ${PORT}
+
+# Instale as dependências do aplicativo
+RUN npm install --force
+
+# Copie o restante do código-fonte para o diretório de trabalho
 COPY . .
-CMD ["yarn", "prod"]
+
+# Exponha a porta para acessar o aplicativo
+EXPOSE ${PORT}
+
+# Comando para iniciar a aplicação
+CMD [ "npm", "start" ]

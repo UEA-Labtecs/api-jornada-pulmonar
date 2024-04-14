@@ -3,10 +3,8 @@ version: "3.9"
 services:
   pulmao:
     container_name: pulmao
-    build: ./apps/pulmao
+    build: .
     restart: always
-    volumes:
-      - ./libs:/app/libs
-    env_file: ./.env
+    env_file: .env
     ports:
-      - ${PORT}:${PORT}
+      - "${PORT}:${PORT}"
