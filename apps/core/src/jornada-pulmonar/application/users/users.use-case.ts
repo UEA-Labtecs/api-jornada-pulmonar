@@ -69,9 +69,9 @@ export class UsersUseCase implements IUsersUseCase {
     }
   };
 
-  async createUser(file: FileDTO, data: any) {
+  async createUser(file: FileDTO, data: any): Promise<any> {
     //regra de negócio
-
+    console.log(file)
     const payload = JSON.parse(data.payload);
 
     const email = await this.findByEmail(payload.email)
@@ -94,15 +94,16 @@ export class UsersUseCase implements IUsersUseCase {
     };
   };
 
-  async addImgUser(id: string, file: FileDTO) {
+  async addImgUser(id: string, file: FileDTO): Promise<any> {
     //regra de negócio
     const users = await this.usersRepository.findAll({ id });
     if (!users[0]) {
       throw new HttpException('Usuário não encontrado', HttpStatus.BAD_REQUEST)
     }
     if (file) {
-      await this.uploadUseCase.upload(file)
-      users[0].imgNameUrl = file.originalname + uuid()
+      console.log(file)
+      users[0].imgNameUrl = users[0].imgNameUrl ? users[0].imgNameUrl : file.originalname + uuid()
+      await this.uploadUseCase.upload({ ...file, originalname: users[0].imgNameUrl })
     } else {
       throw new HttpException('Imagem não enviada', HttpStatus.BAD_REQUEST)
     }

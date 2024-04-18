@@ -10,6 +10,8 @@ COPY package*.json ./
 # Instale as dependências do aplicativo
 RUN npm install --force
 
+RUN npx prisma migrate dev
+
 # Copie o restante do código-fonte para o diretório de trabalho
 COPY . .
 
