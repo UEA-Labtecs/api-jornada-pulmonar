@@ -1,4 +1,4 @@
-import { Injectable } from '@nestjs/common';
+import { HttpException, HttpStatus, Injectable } from '@nestjs/common';
 import { Users } from '../../domain/users/users.entity';
 import { UsersRepository } from './users-repository';
 import { IUsersUseCase } from '../../domain/users/users.use-case.contract';
@@ -23,14 +23,15 @@ export class UsersUseCase implements IUsersUseCase {
 
   ) { }
 
-  async ranking(query): Promise<Users[]> {
+  async ranking(query: any): Promise<Users[]> {
     const users = await this.usersRepository.findAll(query, {
       score: 'desc',
     });
-
     await Promise.all(users.map(async (user) => {
-      const fileUrl = await this.uploadUseCase.getFileURL(user.imgNameUrl)
-      user.imgNameUrl = fileUrl.fileUrl
+      if (user.imgNameUrl) {
+        const fileUrl = await this.uploadUseCase.getFileURL(user.imgNameUrl)
+        user.imgNameUrl = fileUrl.fileUrl
+      }
     }))
 
     return users
@@ -73,20 +74,50 @@ export class UsersUseCase implements IUsersUseCase {
 
     const payload = JSON.parse(data.payload);
 
+    const email = await this.findByEmail(payload.email)
+    if (email) {
+      throw new HttpException('Email já cadastrado no sistema', HttpStatus.BAD_REQUEST)
+    }
     const user = {
       ...payload,
       password: await bcrypt.hash(payload.password, 10),
-      imgNameUrl: payload.name + uuid()
+      imgNameUrl: file ? payload.name + uuid() : ''
     };
 
-
     const response = await this.usersRepository.create(new Users(user))
-    await this.uploadUseCase.upload({ ...file, originalname: user.imgNameUrl });
+    if (file) {
+      await this.uploadUseCase.upload({ ...file, originalname: user.imgNameUrl });
+    }
     return {
       ...response,
       password: undefined,
     };
+  };
 
+  async addImgUser(id: string, file: FileDTO) {
+    //regra de negócio
+    const users = await this.usersRepository.findAll({ id });
+    if (!users[0]) {
+      throw new HttpException('Usuário não encontrado', HttpStatus.BAD_REQUEST)
+    }
+    if (file) {
+      await this.uploadUseCase.upload(file)
+      users[0].imgNameUrl = file.originalname + uuid()
+    } else {
+      throw new HttpException('Imagem não enviada', HttpStatus.BAD_REQUEST)
+    }
+    return await this.usersRepository.update(id,
+      {
+        email: users[0].email,
+        imgNameUrl: users[0].imgNameUrl,
+        role: users[0].role,
+        score: users[0].score,
+        username: users[0].username,
+        password: users[0].password,
+        id: users[0].id,
+        createdAt: users[0].createdAt
+      }
+    )
   };
 
   async updateUser(id: string, data: Users) {

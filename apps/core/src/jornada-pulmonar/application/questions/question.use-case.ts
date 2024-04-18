@@ -1,4 +1,4 @@
-import { Injectable } from '@nestjs/common';
+import { HttpException, HttpStatus, Injectable } from '@nestjs/common';
 import { Questions } from '../../domain/questions/question.entity';
 import { QuestionRepository } from './question-repository';
 import { IQuestionsUseCase } from '../../domain/questions/question.use-case.contract';
@@ -67,7 +67,7 @@ export class QuestionsUseCase implements IQuestionsUseCase {
     }));
 
 
-    return { file: { name: imgNameUrl }, payload };
+    return { file: { name: imgNameUrl }, moduleId, payload };
   }
 
 
@@ -76,16 +76,30 @@ export class QuestionsUseCase implements IQuestionsUseCase {
     return await this.QuestionRepository.update(id, data)
   };
 
-  async findAllQuestion(query): Promise<Questions[]> {
+  async findAllQuestion(query: any): Promise<Questions[]> {
     //regra de negócio
     const questions = await this.QuestionRepository.findAll(query);
 
     await Promise.all(questions.map(async (question) => {
-      const fileUrl = await this.uploadUseCase.getFileURL(question.imgNameUrl)
-      question.imgNameUrl = fileUrl.fileUrl;
+
+      if (question.imgNameUrl) {
+        const fileUrl = await this.uploadUseCase.getFileURL(question.imgNameUrl)
+        question.imgNameUrl = fileUrl.fileUrl;
+      }
     }));
 
     return questions;
+  }
+
+  async findByIdQuestion(id: string): Promise<Questions> {
+    //regra de negócio
+
+    const a = await this.QuestionRepository.findById(id, ['alternatives']);
+
+    if (!a) {
+      throw new HttpException('Questão não encontrada', HttpStatus.BAD_REQUEST)
+    }
+    return a
   }
 
 

@@ -4,6 +4,7 @@ CREATE TABLE "Users" (
     "name" TEXT NOT NULL,
     "email" TEXT NOT NULL,
     "password" TEXT NOT NULL,
+    "imgNameUrl" TEXT NOT NULL,
     "role" TEXT NOT NULL,
     "score" INTEGER NOT NULL DEFAULT 0,
     "createdAt" TIMESTAMP(3) NOT NULL DEFAULT CURRENT_TIMESTAMP,
@@ -27,10 +28,13 @@ CREATE TABLE "Modules" (
 CREATE TABLE "Questions" (
     "id" TEXT NOT NULL,
     "title" TEXT NOT NULL,
+    "audioUrl" TEXT NOT NULL,
+    "imgNameUrl" TEXT NOT NULL,
+    "weight" INTEGER NOT NULL,
     "moduleId" TEXT NOT NULL,
     "createdAt" TIMESTAMP(3) NOT NULL DEFAULT CURRENT_TIMESTAMP,
     "updatedAt" TIMESTAMP(3),
-    "responsesId" TEXT NOT NULL,
+    "responsesId" TEXT,
 
     CONSTRAINT "Questions_pkey" PRIMARY KEY ("id")
 );
@@ -57,6 +61,19 @@ CREATE TABLE "Responses" (
     CONSTRAINT "Responses_pkey" PRIMARY KEY ("id")
 );
 
+-- CreateTable
+CREATE TABLE "UserResponses" (
+    "id" TEXT NOT NULL,
+    "isCorrect" BOOLEAN NOT NULL,
+    "userId" TEXT NOT NULL,
+    "questionId" TEXT NOT NULL,
+    "choiceId" TEXT NOT NULL,
+    "createdAt" TIMESTAMP(3) NOT NULL DEFAULT CURRENT_TIMESTAMP,
+    "updatedAt" TIMESTAMP(3),
+
+    CONSTRAINT "UserResponses_pkey" PRIMARY KEY ("id")
+);
+
 -- CreateIndex
 CREATE UNIQUE INDEX "Users_id_key" ON "Users"("id");
 
@@ -78,6 +95,9 @@ CREATE UNIQUE INDEX "Responses_id_key" ON "Responses"("id");
 -- CreateIndex
 CREATE UNIQUE INDEX "Responses_questionId_key" ON "Responses"("questionId");
 
+-- CreateIndex
+CREATE UNIQUE INDEX "UserResponses_id_key" ON "UserResponses"("id");
+
 -- AddForeignKey
 ALTER TABLE "Modules" ADD CONSTRAINT "Modules_userId_fkey" FOREIGN KEY ("userId") REFERENCES "Users"("id") ON DELETE CASCADE ON UPDATE CASCADE;
 
@@ -92,3 +112,12 @@ ALTER TABLE "Responses" ADD CONSTRAINT "Responses_choiceId_fkey" FOREIGN KEY ("c
 
 -- AddForeignKey
 ALTER TABLE "Responses" ADD CONSTRAINT "Responses_questionId_fkey" FOREIGN KEY ("questionId") REFERENCES "Questions"("id") ON DELETE CASCADE ON UPDATE CASCADE;
+
+-- AddForeignKey
+ALTER TABLE "UserResponses" ADD CONSTRAINT "UserResponses_userId_fkey" FOREIGN KEY ("userId") REFERENCES "Users"("id") ON DELETE RESTRICT ON UPDATE CASCADE;
+
+-- AddForeignKey
+ALTER TABLE "UserResponses" ADD CONSTRAINT "UserResponses_questionId_fkey" FOREIGN KEY ("questionId") REFERENCES "Questions"("id") ON DELETE RESTRICT ON UPDATE CASCADE;
+
+-- AddForeignKey
+ALTER TABLE "UserResponses" ADD CONSTRAINT "UserResponses_choiceId_fkey" FOREIGN KEY ("choiceId") REFERENCES "Options"("id") ON DELETE RESTRICT ON UPDATE CASCADE;

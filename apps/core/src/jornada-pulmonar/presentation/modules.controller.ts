@@ -23,7 +23,6 @@ export class ModulesController {
   @UseGuards(JwtAuthGuard)
   @Get()
   listAll(@Query() query: string) {
-    console.log('controller: ', query)
     const create = makeGetAllModuleController(query);
     return create.handle();
   }

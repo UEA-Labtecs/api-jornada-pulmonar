@@ -57,6 +57,7 @@ export class BaseRepository<T extends IBaseEntity> implements BaseRepositoryAdap
       where: { id: id },
     });
   }
+
   async findAll(query?: any, orderBy?: { [key: string]: 'asc' | 'desc' }): Promise<T[]> {
     let whereCondition: Record<string, any> = {};
 

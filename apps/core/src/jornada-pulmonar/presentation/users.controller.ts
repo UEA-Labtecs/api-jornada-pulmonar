@@ -1,4 +1,4 @@
-import { Controller, Get, Param, Post, Body, UsePipes, ValidationPipe, UseGuards, UseInterceptors, UploadedFile, Query } from '@nestjs/common';
+import { Controller, Get, Param, Post, Body, UsePipes, ValidationPipe, UseGuards, UseInterceptors, UploadedFile, Query, Patch } from '@nestjs/common';
 import { ApiTags } from '@nestjs/swagger';
 import { makeCreateUsersController } from '../infra/users/make-create-users-controller.factory';
 import { makeFindByEmailUsersController } from '../infra/users/make-find-by-email-users-controller.factory';
@@ -8,6 +8,7 @@ import { makeRankingUsersController } from '../infra/users/make-ranking-users-co
 import { makeVerifyUserController } from '../infra/users/make-verify-response-controller.factory';
 import { FileInterceptor } from '@nestjs/platform-express';
 import { FileDTO } from './dto/upload.dto';
+import { makeAddImgUsersController } from '../infra/users/make-add-img-users-controller.factory';
 
 
 @ApiTags('Users')
@@ -18,7 +19,7 @@ export class UsersController {
   @IsPublic()
   @Post()
   @UseInterceptors(FileInterceptor('file'))
-  create(@UploadedFile() file: FileDTO, @Body() body: any) {
+  create(@UploadedFile() file?: FileDTO, @Body() body?: any) {
     const create = makeCreateUsersController(file, body);
     return create.handle();
   }
@@ -33,8 +34,17 @@ export class UsersController {
 
   @IsPublic()
   @UseGuards(JwtAuthGuard)
+  @Patch(':id')
+  @UseInterceptors(FileInterceptor('file'))
+  addImgUser(@Param('id') id: string, @UploadedFile() file: FileDTO,) {
+    const findByEmail = makeAddImgUsersController(id, file);
+    return findByEmail.handle();
+  }
+
+  @IsPublic()
+  @UseGuards(JwtAuthGuard)
   @Get()
-  ranking(@Query() query) {
+  ranking(@Query() query: any) {
     const findByEmail = makeRankingUsersController(query);
     return findByEmail.handle();
   }

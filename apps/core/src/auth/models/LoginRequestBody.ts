@@ -7,3 +7,4 @@ export class LoginRequestBody {
   @IsString()
   password: string;
 }
+

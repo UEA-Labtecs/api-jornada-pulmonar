@@ -13,8 +13,8 @@ export const makeFindAllQuestionController = (query: Questions) => {
   const repositoryMod = new ModulesRepository();
   const repositoryOp = new OptionsRepository();
   const repositoryRes = new ResponsesRepository();
-
   const uploadeUseCase = new UploadsUseCase();
+
   const service = new QuestionsUseCase(repository, repositoryMod, repositoryOp, repositoryRes, uploadeUseCase);
   return new FindAllQuestionController(service, query);
 };

@@ -20,11 +20,20 @@ export class ModulesUseCase implements IModulesUseCase {
     return await this.modulesRepository.update(id, data)
   };
 
-  async findAllModule(query: string): Promise<Modules[]> {
-    //regra de negócio
-    console.log(query)
-    return this.modulesRepository.findAll(query)
+  async findAllModule(query: string): Promise<any> {
+    const modules = await this.modulesRepository.findAll(query);
+
+    const modulesWithQuestionsCount = await Promise.all(modules.map(async (module) => {
+      const questions = await this.modulesRepository.findById(module.id, ['questions']);
+      return {
+        ...module, // Copia todos os atributos do módulo original
+        questionsCount: questions.questions.length // Adiciona a contagem de perguntas
+      };
+    }));
+
+    return modulesWithQuestionsCount;
   }
+
 
   async deleteModule(id: string): Promise<void> {
     //regra de negócio

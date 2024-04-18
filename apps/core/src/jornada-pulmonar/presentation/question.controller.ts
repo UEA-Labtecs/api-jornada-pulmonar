@@ -11,6 +11,7 @@ import { JwtAuthGuard } from '../../auth/guards/jwt-auth.guard';
 import { makeCreateQuestionOnModuleController } from '../infra/questions/make-create-question-on-module-controller.factory';
 import { FileInterceptor } from '@nestjs/platform-express';
 import { FileDTO } from './dto/upload.dto';
+import { makeFindByIdQuestionController } from '../infra/questions/make-find-by-id-task-controller.factory';
 
 
 @ApiTags('Questions')
@@ -45,7 +46,8 @@ export class QuestionController {
 
   @IsPublic()
   @Get()
-  async findAll(@Query() query) {
+  async findAll(@Query() query: any) {
+    console.log(query)
     const findAll = makeFindAllQuestionController(query)
     return findAll.handle()
   }
@@ -53,7 +55,9 @@ export class QuestionController {
   @IsPublic()
   @Get(':id')
   findById(@Param('id') id: string) {
-    return;
+    console.log("controller", id)
+    const findAll = makeFindByIdQuestionController(id)
+    return findAll.handle()
   }
 
 
