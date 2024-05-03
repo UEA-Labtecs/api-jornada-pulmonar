@@ -12,7 +12,7 @@ model Users {
   name          String
   email         String          @unique
   password      String
-  imgNameUrl    String
+  imageBase64   String
   role          String
   modules       Modules[]
   score         Int             @default(0)
@@ -35,8 +35,7 @@ model Questions {
   id            String          @id @unique
   title         String
   audioUrl      String
-  imgNameUrl    String
-  weight        Int
+  imageBase64   String
   alternatives  Options[]       @relation("QuestionOptions")
   module        Modules         @relation(fields: [moduleId], references: [id], onDelete: Cascade)
   moduleId      String

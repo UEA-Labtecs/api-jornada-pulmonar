@@ -24,15 +24,9 @@ export class UsersUseCase implements IUsersUseCase {
   ) { }
 
   async ranking(query: any): Promise<Users[]> {
-    const users = await this.usersRepository.findAll(query, {
+    const users = await this.usersRepository.findAll(query, [''], {
       score: 'desc',
     });
-    await Promise.all(users.map(async (user) => {
-      if (user.imgNameUrl) {
-        const fileUrl = await this.uploadUseCase.getFileURL(user.imgNameUrl)
-        user.imgNameUrl = fileUrl.fileUrl
-      }
-    }))
 
     return users
   }
@@ -41,7 +35,7 @@ export class UsersUseCase implements IUsersUseCase {
     const question: Questions = await this.questionsRepository.findById(questionId, ['response'])
     const responsesUser = await this.usersRepository.findById(userId, ['userResponses'])
 
-    const pontos = calcularPontuacao(time, question.weight)
+    const pontos = calcularPontuacao(time)
 
     for (const item of responsesUser.userResponses) {
       if (questionId === item.questionId && item.isCorrect == true) {
@@ -69,57 +63,53 @@ export class UsersUseCase implements IUsersUseCase {
     }
   };
 
-  async createUser(file: FileDTO, data: any): Promise<any> {
+  async createUser(data: any): Promise<any> {
     //regra de negócio
-    console.log(file)
-    const payload = JSON.parse(data.payload);
 
-    const email = await this.findByEmail(payload.email)
+    const email = await this.findByEmail(data.email)
     if (email) {
       throw new HttpException('Email já cadastrado no sistema', HttpStatus.BAD_REQUEST)
     }
     const user = {
-      ...payload,
-      password: await bcrypt.hash(payload.password, 10),
-      imgNameUrl: file ? payload.name + uuid() : ''
+      ...data,
+      email: data.email.toLowerCase(),
+      password: await bcrypt.hash(data.password, 10),
     };
 
     const response = await this.usersRepository.create(new Users(user))
-    if (file) {
-      await this.uploadUseCase.upload({ ...file, originalname: user.imgNameUrl });
-    }
+
     return {
       ...response,
       password: undefined,
     };
   };
 
-  async addImgUser(id: string, file: FileDTO): Promise<any> {
-    //regra de negócio
-    const users = await this.usersRepository.findAll({ id });
-    if (!users[0]) {
-      throw new HttpException('Usuário não encontrado', HttpStatus.BAD_REQUEST)
-    }
-    if (file) {
-      console.log(file)
-      users[0].imgNameUrl = users[0].imgNameUrl ? users[0].imgNameUrl : file.originalname + uuid()
-      await this.uploadUseCase.upload({ ...file, originalname: users[0].imgNameUrl })
-    } else {
-      throw new HttpException('Imagem não enviada', HttpStatus.BAD_REQUEST)
-    }
-    return await this.usersRepository.update(id,
-      {
-        email: users[0].email,
-        imgNameUrl: users[0].imgNameUrl,
-        role: users[0].role,
-        score: users[0].score,
-        username: users[0].username,
-        password: users[0].password,
-        id: users[0].id,
-        createdAt: users[0].createdAt
-      }
-    )
-  };
+  // async addImgUser(id: string, file: FileDTO): Promise<any> {
+  //   //regra de negócio
+  //   const users = await this.usersRepository.findAll({ id });
+  //   if (!users[0]) {
+  //     throw new HttpException('Usuário não encontrado', HttpStatus.BAD_REQUEST)
+  //   }
+  //   if (file) {
+  //     console.log(file)
+  //     users[0].imgNameUrl = users[0].imgNameUrl ? users[0].imgNameUrl : file.originalname + uuid()
+  //     await this.uploadUseCase.upload({ ...file, originalname: users[0].imgNameUrl })
+  //   } else {
+  //     throw new HttpException('Imagem não enviada', HttpStatus.BAD_REQUEST)
+  //   }
+  //   return await this.usersRepository.update(id,
+  //     {
+  //       email: users[0].email,
+  //       imgNameUrl: users[0].imgNameUrl,
+  //       role: users[0].role,
+  //       score: users[0].score,
+  //       username: users[0].username,
+  //       password: users[0].password,
+  //       id: users[0].id,
+  //       createdAt: users[0].createdAt
+  //     }
+  //   )
+  // };
 
   async updateUser(id: string, data: Users) {
     //regra de negócio
@@ -129,11 +119,6 @@ export class UsersUseCase implements IUsersUseCase {
   async findAllUser(query): Promise<Users[]> {
     //regra de negócio
     const users = await this.usersRepository.findAll(query)
-
-    await Promise.all(users.map(async (user) => {
-      const fileUrl = await this.uploadUseCase.getFileURL(user.imgNameUrl)
-      user.imgNameUrl = fileUrl.fileUrl
-    }))
 
     return users
   }

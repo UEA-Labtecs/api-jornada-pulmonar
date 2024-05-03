@@ -6,11 +6,12 @@ export class Users extends IBaseEntity {
   username: string;
   email: string;
   password: string;
-  imgNameUrl: string;
+  imageBase64: string;
   role: string;
   score: number;
   modules?: Modules[];
   userResponses?: UserResponses[];
   createdAt: Date;
   updatedAt?: Date;
+  imgNameUrl: string;
 }

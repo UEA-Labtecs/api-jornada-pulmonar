@@ -1,11 +1,15 @@
 import { SwaggerModule, DocumentBuilder } from '@nestjs/swagger';
 import { NestFactory } from '@nestjs/core';
 import { AppModule } from './common/modules/app.module';
+import * as bodyParser from 'body-parser';
 
 async function bootstrap() {
   const app = await NestFactory.create(AppModule);
   // https://docs.nestjs.com/faq/global-prefix
   app.setGlobalPrefix('api/v1');
+
+  app.use(bodyParser.json({ limit: '50mb' }));
+  app.use(bodyParser.urlencoded({ limit: '50mb', extended: true }));
 
   // https://docs.nestjs.com/openapi/introduction
   const config = new DocumentBuilder()

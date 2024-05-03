@@ -8,7 +8,7 @@ import { OptionsRepository } from '../../application/options/options-repository'
 import { ResponsesRepository } from '../../application/response/response-repository';
 import { UploadsUseCase } from '../../application/upload/upload.use-case';
 
-export const makeCreateQuestionOnModuleController = (file: any, payload: any,) => {
+export const makeCreateQuestionOnModuleController = (payload: any,) => {
   const repository = new QuestionRepository();
   const repositoryMod = new ModulesRepository();
   const repositoryOp = new OptionsRepository();
@@ -16,5 +16,5 @@ export const makeCreateQuestionOnModuleController = (file: any, payload: any,) =
 
   const uploadeUseCase = new UploadsUseCase();
   const service = new QuestionsUseCase(repository, repositoryMod, repositoryOp, repositoryRes, uploadeUseCase);
-  return new CreateQuestionOnModuleController(service, file, payload);
+  return new CreateQuestionOnModuleController(service, payload);
 };

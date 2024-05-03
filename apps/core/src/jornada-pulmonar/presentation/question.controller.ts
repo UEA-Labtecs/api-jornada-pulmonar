@@ -30,9 +30,8 @@ export class QuestionController {
   @IsPublic()
   @UseGuards(JwtAuthGuard)
   @Post('on-module')
-  @UseInterceptors(FileInterceptor('file'))
-  createOnModule(@UploadedFile() file: FileDTO, @Body() payload: any) {
-    const create = makeCreateQuestionOnModuleController(file, payload);
+  createOnModule(@Body() payload: any) {
+    const create = makeCreateQuestionOnModuleController(payload);
     return create.handle();
   }
 

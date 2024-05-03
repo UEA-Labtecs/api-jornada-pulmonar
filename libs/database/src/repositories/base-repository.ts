@@ -58,7 +58,15 @@ export class BaseRepository<T extends IBaseEntity> implements BaseRepositoryAdap
     });
   }
 
-  async findAll(query?: any, orderBy?: { [key: string]: 'asc' | 'desc' }): Promise<T[]> {
+  async findAll(query?: any, includeRelations?: string[], orderBy?: { [key: string]: 'asc' | 'desc' }): Promise<T[]> {
+    const includeObject: Record<string, boolean> = {};
+
+    if (includeRelations) {
+      for (const relation of includeRelations) {
+        includeObject[relation] = true;
+      }
+    }
+
     let whereCondition: Record<string, any> = {};
 
     if (query) {
@@ -68,6 +76,7 @@ export class BaseRepository<T extends IBaseEntity> implements BaseRepositoryAdap
     const foundItems = await prisma[this.model].findMany({
       where: whereCondition,
       orderBy: orderBy,
+      include: includeObject,
     });
 
     return foundItems as T[];

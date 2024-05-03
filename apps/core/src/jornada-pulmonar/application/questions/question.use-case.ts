@@ -23,9 +23,9 @@ export class QuestionsUseCase implements IQuestionsUseCase {
   ) { }
 
 
-  async createQuestinModule(file: any, data: any) {
+  async createQuestinModule(data: any) {
     const alternatives = [];
-    const payload = JSON.parse(data.payload);
+    const payload = data;
 
 
 
@@ -43,16 +43,13 @@ export class QuestionsUseCase implements IQuestionsUseCase {
       moduleId = newModule.id;
     }
 
-    const imgNameUrl = file.originalname + uuid();
-
     const question = await this.QuestionRepository.create(new Questions({
       title: payload.question,
       moduleId: moduleId,
       audioUrl: payload.audioUrl,
-      imgNameUrl: imgNameUrl,
-      weight: payload.weight
+      imageBase64: payload.imageBase64,
     }));
-    await this.uploadUseCase.upload({ ...file, originalname: imgNameUrl });
+
     await Promise.all(payload.alternatives.map(async (alternative) => {
       const ops = await this.OptionRepository.create(new Options({
         content: alternative.description,
@@ -67,7 +64,7 @@ export class QuestionsUseCase implements IQuestionsUseCase {
     }));
 
 
-    return { file: { name: imgNameUrl }, moduleId, payload };
+    return payload;
   }
 
 
@@ -78,15 +75,7 @@ export class QuestionsUseCase implements IQuestionsUseCase {
 
   async findAllQuestion(query: any): Promise<Questions[]> {
     //regra de negócio
-    const questions = await this.QuestionRepository.findAll(query);
-
-    await Promise.all(questions.map(async (question) => {
-
-      if (question.imgNameUrl) {
-        const fileUrl = await this.uploadUseCase.getFileURL(question.imgNameUrl)
-        question.imgNameUrl = fileUrl.fileUrl;
-      }
-    }));
+    const questions = await this.QuestionRepository.findAll(query, ['alternatives']);
 
     return questions;
   }
