@@ -8,7 +8,7 @@ WORKDIR /app
 COPY package*.json ./
 
 # Instale as dependências do aplicativo
-RUN npm install 
+RUN yarn 
 
 # Copie o restante do código-fonte para o diretório de trabalho
 COPY . .
@@ -17,4 +17,4 @@ COPY . .
 EXPOSE ${PORT}
 
 # Comando para iniciar a aplicação
-CMD [ "npm", "start" ]
+CMD [ "yarn", "start" ]
