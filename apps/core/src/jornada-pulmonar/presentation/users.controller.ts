@@ -43,7 +43,7 @@ export class UsersController {
   @IsPublic()
   @UseGuards(JwtAuthGuard)
   @Get()
-  ranking(@Query() query: any) {
+  ranking(@Query() query?: any) {
     const findByEmail = makeRankingUsersController(query);
     return findByEmail.handle();
   }

@@ -24,10 +24,9 @@ export class UsersUseCase implements IUsersUseCase {
   ) { }
 
   async ranking(query: any): Promise<Users[]> {
-    const users = await this.usersRepository.findAll(query, [''], {
+    const users = await this.usersRepository.findAll(query, [], {
       score: 'desc',
     });
-
     return users
   }
 
