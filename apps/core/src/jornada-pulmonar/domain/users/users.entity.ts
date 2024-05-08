@@ -13,5 +13,5 @@ export class Users extends IBaseEntity {
   userResponses?: UserResponses[];
   createdAt: Date;
   updatedAt?: Date;
-  imgNameUrl: string;
+  answered: boolean;
 }

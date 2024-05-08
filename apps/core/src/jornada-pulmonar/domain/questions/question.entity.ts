@@ -11,6 +11,7 @@ export class Questions extends IBaseEntity {
   moduleId: string;
   module?: Modules;
   response?: Responses;
+  answered?: Boolean;
 }
 
 

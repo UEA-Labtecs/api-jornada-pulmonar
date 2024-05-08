@@ -42,7 +42,7 @@ model Questions {
   response      Responses?
   createdAt     DateTime        @default(now())
   updatedAt     DateTime?
-  responsesId   String?
+  answered      Boolean         @default(false)
   userResponses UserResponses[]
 }
 

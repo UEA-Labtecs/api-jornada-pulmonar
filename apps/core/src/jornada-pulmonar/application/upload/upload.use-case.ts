@@ -14,7 +14,6 @@ export class UploadsUseCase {
   });
 
   async upload(file: FileDTO) {
-    console.log('cheguei aqui ================================>')
     const data = await this.supabase.storage
       .from('pulmao')
       .upload(file.originalname, file.buffer, {

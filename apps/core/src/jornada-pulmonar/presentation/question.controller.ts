@@ -46,7 +46,6 @@ export class QuestionController {
   @IsPublic()
   @Get()
   async findAll(@Query() query: any) {
-    console.log(query)
     const findAll = makeFindAllQuestionController(query)
     return findAll.handle()
   }
@@ -54,7 +53,6 @@ export class QuestionController {
   @IsPublic()
   @Get(':id')
   findById(@Param('id') id: string) {
-    console.log("controller", id)
     const findAll = makeFindByIdQuestionController(id)
     return findAll.handle()
   }

@@ -10,6 +10,7 @@ import { ResponsesRepository } from '../response/response-repository';
 import { Responses } from '../../domain/responses/responses.entity';
 import { UploadsUseCase } from '../upload/upload.use-case';
 import { v4 as uuid } from 'uuid'
+import { UserResponsesRepository } from '../user-reponse/user-response-repository';
 
 @Injectable()
 export class QuestionsUseCase implements IQuestionsUseCase {
@@ -19,7 +20,7 @@ export class QuestionsUseCase implements IQuestionsUseCase {
     private readonly ModuleRepository?: ModulesRepository,
     private readonly OptionRepository?: OptionsRepository,
     private readonly ResponseRepository?: ResponsesRepository,
-    private readonly uploadUseCase?: UploadsUseCase,
+    private readonly userResponseRepository?: UserResponsesRepository,
   ) { }
 
 
@@ -74,11 +75,31 @@ export class QuestionsUseCase implements IQuestionsUseCase {
   };
 
   async findAllQuestion(query: any): Promise<Questions[]> {
-    //regra de negócio
-    const questions = await this.QuestionRepository.findAll(query, ['alternatives']);
+    // Obter todas as respostas
+    const responses = await this.userResponseRepository.findAll(query);
 
+    // Obter todas as perguntas
+    const questions = await this.QuestionRepository.findAll({}, ['alternatives']);
+
+    // Iterar sobre as respostas e modificar as perguntas conforme necessário
+    responses.forEach(response => {
+      // Verificar se a resposta está correta
+      if (response.isCorrect) {
+        // Encontrar a pergunta correspondente pelo questionId
+        const question = questions.find(q => q.id === response.questionId);
+        if (question) {
+          // Definir answered como true na pergunta correspondente
+          question.answered = true;
+          question.imageBase64 = 'true';
+        }
+
+      }
+    });
+
+    // Retornar as perguntas modificadas
     return questions;
   }
+
 
   async findByIdQuestion(id: string): Promise<Questions> {
     //regra de negócio

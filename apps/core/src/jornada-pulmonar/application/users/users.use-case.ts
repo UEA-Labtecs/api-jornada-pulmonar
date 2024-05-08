@@ -43,13 +43,15 @@ export class UsersUseCase implements IUsersUseCase {
         }
       }
     }
-
     if (questionId == question.response.questionId && optionId == question.response.choiceId) {
       const user = await this.usersRepository.findById(userId)
       // salvar registro das resposta do usuario
       await this.userResponsesRepository.create(new UserResponses({ choiceId: optionId, questionId, userId, isCorrect: true }))
 
       await this.usersRepository.update(user.id, { ...user, score: user.score + pontos - (responsesUser.userResponses.length * 2) })
+      const { response, ...question1 } = question;
+      await this.questionsRepository.update(questionId, { ...question1, answered: true })
+
 
       return {
         message: 'respota correta',
