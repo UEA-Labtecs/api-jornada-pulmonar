@@ -55,7 +55,8 @@ export class UsersUseCase implements IUsersUseCase {
 
       return {
         message: 'respota correta',
-        pontuacao: pontos - (responsesUser.userResponses.length * 2)
+        pontuacao: pontos - (responsesUser.userResponses.length * 2),
+        time: time
       }
     }
     else {
