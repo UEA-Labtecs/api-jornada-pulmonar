@@ -16,7 +16,6 @@ export const makeRankingUsersController = (query) => {
   const repositoryMod = new QuestionRepository();
   const repositoryOp = new UserResponsesRepository();
 
-  const uploadeUseCase = new UploadsUseCase();
-  const useCase = new UsersUseCase(repository, repositoryMod, repositoryOp, uploadeUseCase);
+  const useCase = new UsersUseCase(repository, repositoryMod, repositoryOp);
   return new RankingUsersController(useCase, query);
 };

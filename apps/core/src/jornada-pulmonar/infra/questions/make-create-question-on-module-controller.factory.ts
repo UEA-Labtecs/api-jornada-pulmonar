@@ -14,7 +14,6 @@ export const makeCreateQuestionOnModuleController = (payload: any,) => {
   const repositoryOp = new OptionsRepository();
   const repositoryRes = new ResponsesRepository();
 
-  const uploadeUseCase = new UploadsUseCase();
-  const service = new QuestionsUseCase(repository, repositoryMod, repositoryOp, repositoryRes, uploadeUseCase);
+  const service = new QuestionsUseCase(repository, repositoryMod, repositoryOp, repositoryRes);
   return new CreateQuestionOnModuleController(service, payload);
 };
