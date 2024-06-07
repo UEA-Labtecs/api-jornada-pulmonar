@@ -70,11 +70,11 @@ model Responses {
 model UserResponses {
   id         String    @id @unique
   isCorrect  Boolean
-  user       Users     @relation(fields: [userId], references: [id])
+  user       Users     @relation(fields: [userId], references: [id], onDelete: Cascade)
   userId     String
-  question   Questions @relation(fields: [questionId], references: [id])
+  question   Questions @relation(fields: [questionId], references: [id], onDelete: Cascade)
   questionId String
-  choice     Options   @relation(fields: [choiceId], references: [id])
+  choice     Options   @relation(fields: [choiceId], references: [id], onDelete: Cascade)
   choiceId   String
   createdAt  DateTime  @default(now())
   updatedAt  DateTime?

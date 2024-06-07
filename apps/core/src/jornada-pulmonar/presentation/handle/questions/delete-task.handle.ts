@@ -7,6 +7,8 @@ export class DeleteQuestionController {
     private readonly id: string,
   ) { }
   async handle() {
+    console.log(this.id)
+
     return await this.service.deleteQuestion(this.id);
   }
 }

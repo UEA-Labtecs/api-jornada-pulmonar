@@ -53,8 +53,9 @@ export class BaseRepository<T extends IBaseEntity> implements BaseRepositoryAdap
   }
 
   async delete(id: string | number): Promise<void> {
+    console.log("=========>", this.model)
     await prisma[this.model].delete({
-      where: { id: id },
+      where: { id },
     });
   }
 

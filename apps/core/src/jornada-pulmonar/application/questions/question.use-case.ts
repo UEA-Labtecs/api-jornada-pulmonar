@@ -117,6 +117,7 @@ export class QuestionsUseCase implements IQuestionsUseCase {
 
   async deleteQuestion(id: string): Promise<void> {
     //regra de negócio
+    console.log('+++++++')
     return await this.QuestionRepository.delete(id)
   }
 
