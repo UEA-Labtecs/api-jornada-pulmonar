@@ -5,10 +5,11 @@ import { Responses } from "../responses/responses.entity";
 
 export class Questions extends IBaseEntity {
   title: string;
-  imageBase64: string
+  imageBase64?: string;
+  audioUrl?: string;
   options?: Options[];
   correctOption?: Options;
-  moduleId: string;
+  moduleId?: string;
   module?: Modules;
   response?: Responses;
   answered?: Boolean;

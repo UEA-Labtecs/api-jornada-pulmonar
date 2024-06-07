@@ -4,6 +4,8 @@ import { makeCreateModuleController } from '../infra/modules/make-create-modules
 import { makeCreateOptionsController } from '../infra/options/make-create-options-controller.factory';
 import { IsPublic } from '../../auth/decorators/is-public.decorator';
 import { JwtAuthGuard } from '../../auth/guards/jwt-auth.guard';
+import { makeUpdateQuestionController } from '../infra/questions/make-update-task-controller.factory';
+import { makeUpdateOptionsController } from '../infra/options/make-update-options-controller.factory';
 
 
 @ApiTags('Options')
@@ -17,6 +19,14 @@ export class OptionsController {
   create(@Body() body: any) {
     const create = makeCreateOptionsController(body);
     return create.handle();
+  }
+
+  @IsPublic()
+  @UseGuards(JwtAuthGuard)
+  @Patch(':id')
+  update(@Param('id') id: string, @Body() body: any) {
+    const update = makeUpdateOptionsController(id, body);
+    return update.handle();
   }
 
 }

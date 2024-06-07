@@ -38,7 +38,7 @@ export class QuestionController {
   @IsPublic()
   @UseGuards(JwtAuthGuard)
   @Patch(':id')
-  update(@Param('id') id: string, @Body() body: UpdateQuestionDto) {
+  update(@Param('id') id: string, @Body() body: any) {
     const update = makeUpdateQuestionController(id, body);
     return update.handle();
   }

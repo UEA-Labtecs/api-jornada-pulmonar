@@ -5,6 +5,7 @@ import { IsPublic } from '../../auth/decorators/is-public.decorator';
 import { LocalAuthGuard } from '../../auth/guards/local-auth.guard';
 import { JwtAuthGuard } from '../../auth/guards/jwt-auth.guard';
 import { makeGetAllModuleController } from '../infra/modules/make-create-modules-controller.factory copy';
+import { makeUpdateModuleController } from '../infra/modules/make-update-module-controller.factory';
 
 
 @ApiTags('Modules')
@@ -24,6 +25,15 @@ export class ModulesController {
   @Get()
   listAll(@Query() query: string) {
     const create = makeGetAllModuleController(query);
+    return create.handle();
+  }
+
+
+  @IsPublic()
+  @UseGuards(JwtAuthGuard)
+  @Patch(':id')
+  update(@Param('id') id: string, @Body() body: any) {
+    const create = makeUpdateModuleController(id, body);
     return create.handle();
   }
 

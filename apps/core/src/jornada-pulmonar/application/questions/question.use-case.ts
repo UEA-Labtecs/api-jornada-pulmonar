@@ -69,18 +69,20 @@ export class QuestionsUseCase implements IQuestionsUseCase {
   }
 
 
-  async updateQuestion(id: string, data: Questions) {
+  async updateQuestion(id: string, data: any) {
     //regra de negócio
+    console.log({ data })
     return await this.QuestionRepository.update(id, data)
   };
 
   async findAllQuestion(query: any): Promise<Questions[]> {
     // Obter todas as respostas
-    const responses = await this.userResponseRepository.findAll(query);
-
+    console.log('aqui')
+    const responses = await this.userResponseRepository.findAll();
     // Obter todas as perguntas
-    const questions = await this.QuestionRepository.findAll({}, ['alternatives']);
+    const questions = await this.QuestionRepository.findAll(query, ['alternatives']);
 
+    console.log({ questions })
     // Iterar sobre as respostas e modificar as perguntas conforme necessário
     responses.forEach(response => {
       // Verificar se a resposta está correta
