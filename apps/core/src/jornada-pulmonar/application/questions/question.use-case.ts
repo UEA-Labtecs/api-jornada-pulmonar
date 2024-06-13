@@ -77,11 +77,10 @@ export class QuestionsUseCase implements IQuestionsUseCase {
 
   async findAllQuestion(query: any): Promise<Questions[]> {
     // Obter todas as respostas
-    console.log('aqui')
-    const responses = await this.userResponseRepository.findAll();
-    // Obter todas as perguntas
-    const questions = await this.QuestionRepository.findAll(query, ['alternatives']);
+    const responses = await this.userResponseRepository.findAll(query);
 
+    // Obter todas as perguntas
+    const questions = await this.QuestionRepository.findAll({}, ['alternatives']);
     console.log({ questions })
     // Iterar sobre as respostas e modificar as perguntas conforme necessário
     responses.forEach(response => {
