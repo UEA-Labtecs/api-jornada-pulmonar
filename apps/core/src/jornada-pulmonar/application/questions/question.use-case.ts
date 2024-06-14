@@ -71,30 +71,83 @@ export class QuestionsUseCase implements IQuestionsUseCase {
 
   async updateQuestion(id: string, data: any) {
     //regra de negócio
-    console.log({ data })
-    return await this.QuestionRepository.update(id, data)
+    const ids = await this.QuestionRepository.findById(id)
+
+    if (!ids) {
+      throw new HttpException("Questao não encontrada", HttpStatus.BAD_REQUEST)
+    }
+
+    await this.QuestionRepository.delete(id)
+    const alternatives = [];
+    const payload = data;
+
+
+
+    // Procura por módulos com o título especificado
+    const modules = await this.ModuleRepository.findAll({ title: payload.titleUnit });
+
+    let moduleId;
+
+    if (modules.length > 0) {
+      // Se módulos existirem, usa o ID do primeiro módulo encontrado
+      moduleId = modules[0].id;
+    } else {
+      // Se nenhum módulo for encontrado, cria um novo módulo
+      const newModule = await this.ModuleRepository.create(new Modules({ title: payload.titleUnit, userId: payload.userId }));
+      moduleId = newModule.id;
+    }
+
+    const question = await this.QuestionRepository.create(new Questions({
+      title: payload.question,
+      moduleId: moduleId,
+      audioUrl: payload.audioUrl,
+      imageBase64: payload.imageBase64,
+    }));
+
+    await Promise.all(payload.alternatives.map(async (alternative) => {
+      const ops = await this.OptionRepository.create(new Options({
+        content: alternative.description,
+        questionId: question.id
+      }));
+
+      if (alternative.correctAlternative === true) {
+        await this.ResponseRepository.create(new Responses({ choiceId: ops.id, questionId: question.id }));
+      }
+
+      alternatives.push(ops);
+    }));
+
+    return;
   };
 
-  async findAllQuestion(query: any): Promise<Questions[]> {
-    // Obter todas as respostas
-    const responses = await this.userResponseRepository.findAll(query);
+  async findAllQuestion(query: any) {
+    // Obter todas as respostas do usuário
+    const responses = await this.userResponseRepository.findAll({ userId: query.userId });
 
-    // Obter todas as perguntas
+    // Obter todas as respostas corretas
+    const correctResponses = await this.ResponseRepository.findAll({ questionId: query.questionId });
+    console.log({ responses });
+    console.log({ correctResponses });
+
+    // Obter todas as perguntas com alternativas
     const questions = await this.QuestionRepository.findAll({}, ['alternatives']);
-    console.log({ questions })
-    // Iterar sobre as respostas e modificar as perguntas conforme necessário
-    responses.forEach(response => {
-      // Verificar se a resposta está correta
-      if (response.isCorrect) {
-        // Encontrar a pergunta correspondente pelo questionId
-        const question = questions.find(q => q.id === response.questionId);
-        if (question) {
-          // Definir answered como true na pergunta correspondente
+    console.log({ questions });
+
+    // Iterar sobre as perguntas e adicionar a informação da alternativa correta
+    questions.forEach(question => {
+      // Iterar sobre as alternativas e adicionar o campo isCorrect
+      question.alternatives.forEach(alternative => {
+        const correctResponse = correctResponses.find(response => response.choiceId === alternative.id);
+        alternative.correctAlternative = correctResponse ? true : false;
+      });
+
+      // Iterar sobre as respostas do usuário e modificar as perguntas conforme necessário
+      responses.forEach(response => {
+        if (response.isCorrect && response.questionId === question.id) {
           question.answered = true;
           question.imageBase64 = 'true';
         }
-
-      }
+      });
     });
 
     // Retornar as perguntas modificadas

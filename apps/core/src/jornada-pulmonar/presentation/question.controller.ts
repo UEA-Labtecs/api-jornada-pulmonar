@@ -58,7 +58,7 @@ export class QuestionController {
   }
 
 
-  @UseGuards(JwtAuthGuard)
+  @IsPublic()
   @Delete(':id')
   delete(@Param('id') id: string) {
     const deleted = makeDeleteQuestionController(id)
