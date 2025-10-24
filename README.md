@@ -1,93 +1,209 @@
-# agro-backend
+# Jornada Pulmonar - Backend
 
+Backend da aplicação Jornada Pulmonar, uma plataforma educacional desenvolvida com NestJS para gerenciar módulos, questões e respostas de usuários.
 
+## 🚀 Tecnologias
 
-## Getting started
+- **NestJS** - Framework Node.js
+- **Prisma** - ORM para PostgreSQL
+- **PostgreSQL** - Banco de dados
+- **JWT** - Autenticação
+- **Passport** - Estratégias de autenticação
+- **Swagger** - Documentação da API
+- **Supabase** - Armazenamento de arquivos (opcional)
 
-To make it easy for you to get started with GitLab, here's a list of recommended next steps.
+## 📋 Pré-requisitos
 
-Already a pro? Just edit this README.md and make it your own. Want to make it easy? [Use the template at the bottom](#editing-this-readme)!
+- Node.js (v16 ou superior)
+- Yarn ou NPM
+- PostgreSQL (v12 ou superior)
+- Docker e Docker Compose (opcional)
 
-## Add your files
+## ⚙️ Configuração
 
-- [ ] [Create](https://docs.gitlab.com/ee/user/project/repository/web_editor.html#create-a-file) or [upload](https://docs.gitlab.com/ee/user/project/repository/web_editor.html#upload-a-file) files
-- [ ] [Add files using the command line](https://docs.gitlab.com/ee/gitlab-basics/add-file.html#add-a-file-using-the-command-line) or push an existing Git repository with the following command:
+### 1. Instalação
+
+```bash
+# Clone o repositório
+git clone <repository-url>
+cd jornada-pulmonar-backend
+
+# Instale as dependências
+yarn install
+```
+
+### 2. Variáveis de Ambiente
+
+Configure as variáveis de ambiente necessárias:
+
+```bash
+# Copie o arquivo de exemplo
+cp .env.example .env
+```
+
+**📖 Para instruções detalhadas sobre configuração das variáveis de ambiente, consulte o arquivo [ENV_SETUP.md](./ENV_SETUP.md)**
+
+Variáveis principais:
+- `DATABASE_URL` - String de conexão do PostgreSQL
+- `PORT` - Porta do servidor (padrão: 3000)
+- `JWT_SECRET` - Chave secreta para JWT
+- `SUPABASE_URL`, `SUPABASE_KEY` - Credenciais do Supabase (opcional)
+
+### 3. Banco de Dados
+
+```bash
+# Execute as migrações
+npx prisma migrate dev
+
+# Gere o Prisma Client
+npx prisma generate
+
+# (Opcional) Abra o Prisma Studio para visualizar os dados
+npx prisma studio
+```
+
+## 🏃 Executando a Aplicação
+
+### Desenvolvimento
+
+```bash
+# Modo watch (recarrega automaticamente)
+yarn start:dev
+```
+
+### Produção
+
+```bash
+# Build
+yarn build
+
+# Execute em produção
+yarn start:prod
+```
+
+### Docker
+
+```bash
+# Inicie com Docker Compose
+docker-compose up -d
+
+# Visualize os logs
+docker-compose logs -f
+
+# Pare os containers
+docker-compose down
+```
+
+## 📚 Documentação da API
+
+Após iniciar o servidor, acesse a documentação Swagger:
 
 ```
-cd existing_repo
-git remote add origin https://lab.grupoicts.com.br/foxconn/agro-inteligente/agro-backend.git
-git branch -M main
-git push -uf origin main
+http://localhost:3000/api
 ```
 
-## Integrate with your tools
+## 🔐 Autenticação
 
-- [ ] [Set up project integrations](https://lab.grupoicts.com.br/foxconn/agro-inteligente/agro-backend/-/settings/integrations)
+A API utiliza JWT (JSON Web Token) para autenticação. Para acessar rotas protegidas:
 
-## Collaborate with your team
+1. Faça login através da rota `/api/v1/auth/login`
+2. Use o token retornado no header `Authorization: Bearer <token>`
 
-- [ ] [Invite team members and collaborators](https://docs.gitlab.com/ee/user/project/members/)
-- [ ] [Create a new merge request](https://docs.gitlab.com/ee/user/project/merge_requests/creating_merge_requests.html)
-- [ ] [Automatically close issues from merge requests](https://docs.gitlab.com/ee/user/project/issues/managing_issues.html#closing-issues-automatically)
-- [ ] [Enable merge request approvals](https://docs.gitlab.com/ee/user/project/merge_requests/approvals/)
-- [ ] [Set auto-merge](https://docs.gitlab.com/ee/user/project/merge_requests/merge_when_pipeline_succeeds.html)
+## 🗂️ Estrutura do Projeto
 
-## Test and Deploy
+```
+apps/core/src/
+├── auth/              # Autenticação e autorização
+├── common/            # Módulos e serviços compartilhados
+│   ├── modules/       # Módulos do NestJS
+│   └── services/      # Serviços compartilhados (Prisma, etc)
+└── jornada-pulmonar/  # Domínio principal
+    ├── application/   # Casos de uso
+    ├── domain/        # Entidades e regras de negócio
+    ├── infra/         # Repositórios e adaptadores
+    └── presentation/  # Controllers e DTOs
+```
 
-Use the built-in continuous integration in GitLab.
+## 🧪 Testes
 
-- [ ] [Get started with GitLab CI/CD](https://docs.gitlab.com/ee/ci/quick_start/index.html)
-- [ ] [Analyze your code for known vulnerabilities with Static Application Security Testing (SAST)](https://docs.gitlab.com/ee/user/application_security/sast/)
-- [ ] [Deploy to Kubernetes, Amazon EC2, or Amazon ECS using Auto Deploy](https://docs.gitlab.com/ee/topics/autodevops/requirements.html)
-- [ ] [Use pull-based deployments for improved Kubernetes management](https://docs.gitlab.com/ee/user/clusters/agent/)
-- [ ] [Set up protected environments](https://docs.gitlab.com/ee/ci/environments/protected_environments.html)
+```bash
+# Testes unitários
+yarn test
 
-***
+# Testes com cobertura
+yarn test:cov
 
-# Editing this README
+# Testes e2e
+yarn test:e2e
 
-When you're ready to make this README your own, just edit this file and use the handy template below (or feel free to structure it however you want - this is just a starting point!). Thanks to [makeareadme.com](https://www.makeareadme.com/) for this template.
+# Testes em modo watch
+yarn test:watch
+```
 
-## Suggestions for a good README
+## 📝 Scripts Disponíveis
 
-Every project is different, so consider which of these sections apply to yours. The sections used in the template are suggestions for most open source projects. Also keep in mind that while a README can be too long and detailed, too long is better than too short. If you think your README is too long, consider utilizing another form of documentation rather than cutting out information.
+```bash
+yarn start:dev      # Inicia em modo desenvolvimento
+yarn start:prod     # Inicia em modo produção
+yarn build          # Compila o projeto
+yarn format         # Formata o código com Prettier
+yarn lint           # Executa o ESLint
+yarn test           # Executa os testes
+```
 
-## Name
-Choose a self-explaining name for your project.
+## 🔧 Migrations do Prisma
 
-## Description
-Let people know what your project can do specifically. Provide context and add a link to any reference visitors might be unfamiliar with. A list of Features or a Background subsection can also be added here. If there are alternatives to your project, this is a good place to list differentiating factors.
+```bash
+# Criar uma nova migration
+npx prisma migrate dev --name nome_da_migration
 
-## Badges
-On some READMEs, you may see small images that convey metadata, such as whether or not all the tests are passing for the project. You can use Shields to add some to your README. Many services also have instructions for adding a badge.
+# Aplicar migrations em produção
+npx prisma migrate deploy
 
-## Visuals
-Depending on what you are making, it can be a good idea to include screenshots or even a video (you'll frequently see GIFs rather than actual videos). Tools like ttygif can help, but check out Asciinema for a more sophisticated method.
+# Resetar o banco de dados (desenvolvimento)
+npx prisma migrate reset
+```
 
-## Installation
-Within a particular ecosystem, there may be a common way of installing things, such as using Yarn, NuGet, or Homebrew. However, consider the possibility that whoever is reading your README is a novice and would like more guidance. Listing specific steps helps remove ambiguity and gets people to using your project as quickly as possible. If it only runs in a specific context like a particular programming language version or operating system or has dependencies that have to be installed manually, also add a Requirements subsection.
+## 🌐 Endpoints Principais
 
-## Usage
-Use examples liberally, and show the expected output if you can. It's helpful to have inline the smallest example of usage that you can demonstrate, while providing links to more sophisticated examples if they are too long to reasonably include in the README.
+- `POST /api/v1/auth/login` - Login de usuário
+- `GET /api/v1/users` - Listar usuários
+- `POST /api/v1/modules` - Criar módulo
+- `GET /api/v1/questions` - Listar questões
+- `POST /api/v1/responses` - Registrar resposta
 
-## Support
-Tell people where they can go to for help. It can be any combination of an issue tracker, a chat room, an email address, etc.
+Para ver todos os endpoints, acesse a documentação Swagger.
 
-## Roadmap
-If you have ideas for releases in the future, it is a good idea to list them in the README.
+## 🤝 Contribuindo
 
-## Contributing
-State if you are open to contributions and what your requirements are for accepting them.
+1. Faça um fork do projeto
+2. Crie uma branch para sua feature (`git checkout -b feature/MinhaFeature`)
+3. Commit suas mudanças (`git commit -m 'Adiciona MinhaFeature'`)
+4. Push para a branch (`git push origin feature/MinhaFeature`)
+5. Abra um Pull Request
 
-For people who want to make changes to your project, it's helpful to have some documentation on how to get started. Perhaps there is a script that they should run or some environment variables that they need to set. Make these steps explicit. These instructions could also be useful to your future self.
+### Padrões de Commit
 
-You can also document commands to lint the code or run tests. These steps help to ensure high code quality and reduce the likelihood that the changes inadvertently break something. Having instructions for running tests is especially helpful if it requires external setup, such as starting a Selenium server for testing in a browser.
+Este projeto usa [Conventional Commits](https://www.conventionalcommits.org/):
 
-## Authors and acknowledgment
-Show your appreciation to those who have contributed to the project.
+```
+feat: adiciona nova funcionalidade
+fix: corrige um bug
+docs: atualiza documentação
+style: formatação de código
+refactor: refatoração de código
+test: adiciona ou atualiza testes
+chore: tarefas de manutenção
+```
 
-## License
-For open source projects, say how it is licensed.
+## 📄 Licença
 
-## Project status
-If you have run out of energy or time for your project, put a note at the top of the README saying that development has slowed down or stopped completely. Someone may choose to fork your project or volunteer to step in as a maintainer or owner, allowing your project to keep going. You can also make an explicit request for maintainers.
+MIT
+
+## 👥 Autores
+
+Desenvolvido pela equipe UEA - Universidade do Estado do Amazonas
+
+## 📞 Suporte
+
+Para suporte, entre em contato através do repositório ou abra uma issue.

@@ -1,10 +1,17 @@
-import { SwaggerModule, DocumentBuilder } from '@nestjs/swagger';
 import { NestFactory } from '@nestjs/core';
-import { AppModule } from './common/modules/app.module';
+import { DocumentBuilder, SwaggerModule } from '@nestjs/swagger';
 import * as bodyParser from 'body-parser';
+import { AppModule } from './common/modules/app.module';
 
 async function bootstrap() {
   const app = await NestFactory.create(AppModule);
+  
+  // Habilitar CORS para aceitar requisições do mobile
+  app.enableCors({
+    origin: true,
+    credentials: true,
+  });
+  
   // https://docs.nestjs.com/faq/global-prefix
   app.setGlobalPrefix('api/v1');
 
