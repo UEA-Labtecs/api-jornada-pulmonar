@@ -41,13 +41,33 @@ Configure as variáveis de ambiente necessárias:
 cp .env.example .env
 ```
 
-**📖 Para instruções detalhadas sobre configuração das variáveis de ambiente, consulte o arquivo [ENV_SETUP.md](./ENV_SETUP.md)**
+Edite o arquivo `.env` e configure as seguintes variáveis:
 
-Variáveis principais:
-- `DATABASE_URL` - String de conexão do PostgreSQL
-- `PORT` - Porta do servidor (padrão: 3000)
-- `JWT_SECRET` - Chave secreta para JWT
-- `SUPABASE_URL`, `SUPABASE_KEY` - Credenciais do Supabase (opcional)
+```env
+# Database Configuration
+DATABASE_URL="postgresql://user:password@localhost:5432/jornada_pulmonar?schema=public"
+
+# JWT Configuration
+JWT_SECRET="seu-segredo-jwt-aqui"
+JWT_EXPIRES_IN="7d"
+
+# Application
+NODE_ENV="development"
+PORT=3000
+
+# CORS
+ALLOWED_ORIGINS="http://localhost:19006,http://localhost:8081"
+
+# Firebase (opcional - para push notifications)
+FIREBASE_PROJECT_ID="seu-projeto-id"
+FIREBASE_PRIVATE_KEY="sua-chave-privada"
+FIREBASE_CLIENT_EMAIL="seu-email-cliente"
+```
+
+**⚠️ Importante:** 
+- O arquivo `.env` contém dados sensíveis e **não deve ser commitado** no git
+- Use o `.env.example` como template
+- Mantenha suas credenciais seguras
 
 ### 3. Banco de Dados
 

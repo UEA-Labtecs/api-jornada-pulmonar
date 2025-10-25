@@ -1,16 +1,14 @@
 import { HttpException, HttpStatus, Injectable } from '@nestjs/common';
-import { Questions } from '../../domain/questions/question.entity';
-import { QuestionRepository } from './question-repository';
-import { IQuestionsUseCase } from '../../domain/questions/question.use-case.contract';
-import { ModulesRepository } from '../modules/modules-repository';
 import { Modules } from '../../domain/modules/modules.entity';
-import { OptionsRepository } from '../options/options-repository';
 import { Options } from '../../domain/options/options.entity';
-import { ResponsesRepository } from '../response/response-repository';
+import { Questions } from '../../domain/questions/question.entity';
+import { IQuestionsUseCase } from '../../domain/questions/question.use-case.contract';
 import { Responses } from '../../domain/responses/responses.entity';
-import { UploadsUseCase } from '../upload/upload.use-case';
-import { v4 as uuid } from 'uuid'
+import { ModulesRepository } from '../modules/modules-repository';
+import { OptionsRepository } from '../options/options-repository';
+import { ResponsesRepository } from '../response/response-repository';
 import { UserResponsesRepository } from '../user-reponse/user-response-repository';
+import { QuestionRepository } from './question-repository';
 
 @Injectable()
 export class QuestionsUseCase implements IQuestionsUseCase {
@@ -28,20 +26,26 @@ export class QuestionsUseCase implements IQuestionsUseCase {
     const alternatives = [];
     const payload = data;
 
-
-
-    // Procura por módulos com o título especificado
-    const modules = await this.ModuleRepository.findAll({ title: payload.titleUnit });
-
     let moduleId;
 
-    if (modules.length > 0) {
-      // Se módulos existirem, usa o ID do primeiro módulo encontrado
-      moduleId = modules[0].id;
+    // PRIORIDADE 1: Se moduleId foi fornecido (unidade selecionada), usa ele
+    if (payload.moduleId) {
+      console.log('✅ Usando unidade existente, ID:', payload.moduleId);
+      moduleId = payload.moduleId;
     } else {
-      // Se nenhum módulo for encontrado, cria um novo módulo
-      const newModule = await this.ModuleRepository.create(new Modules({ title: payload.titleUnit, userId: payload.userId }));
-      moduleId = newModule.id;
+      // PRIORIDADE 2: Procura por módulos com o título especificado
+      const modules = await this.ModuleRepository.findAll({ title: payload.titleUnit });
+
+      if (modules.length > 0) {
+        // Se módulos existirem, usa o ID do primeiro módulo encontrado
+        console.log('⚠️ Encontrado módulo existente por título:', modules[0].id);
+        moduleId = modules[0].id;
+      } else {
+        // Se nenhum módulo for encontrado, cria um novo módulo
+        console.log('🆕 Criando nova unidade:', payload.titleUnit);
+        const newModule = await this.ModuleRepository.create(new Modules({ title: payload.titleUnit, userId: payload.userId }));
+        moduleId = newModule.id;
+      }
     }
 
     const question = await this.QuestionRepository.create(new Questions({
@@ -81,20 +85,24 @@ export class QuestionsUseCase implements IQuestionsUseCase {
     const alternatives = [];
     const payload = data;
 
-
-
-    // Procura por módulos com o título especificado
-    const modules = await this.ModuleRepository.findAll({ title: payload.titleUnit });
-
     let moduleId;
 
-    if (modules.length > 0) {
-      // Se módulos existirem, usa o ID do primeiro módulo encontrado
-      moduleId = modules[0].id;
+    // PRIORIDADE 1: Se moduleId foi fornecido, usa ele
+    if (payload.moduleId) {
+      console.log('✅ Usando unidade existente (update), ID:', payload.moduleId);
+      moduleId = payload.moduleId;
     } else {
-      // Se nenhum módulo for encontrado, cria um novo módulo
-      const newModule = await this.ModuleRepository.create(new Modules({ title: payload.titleUnit, userId: payload.userId }));
-      moduleId = newModule.id;
+      // PRIORIDADE 2: Procura por módulos com o título especificado
+      const modules = await this.ModuleRepository.findAll({ title: payload.titleUnit });
+
+      if (modules.length > 0) {
+        // Se módulos existirem, usa o ID do primeiro módulo encontrado
+        moduleId = modules[0].id;
+      } else {
+        // Se nenhum módulo for encontrado, cria um novo módulo
+        const newModule = await this.ModuleRepository.create(new Modules({ title: payload.titleUnit, userId: payload.userId }));
+        moduleId = newModule.id;
+      }
     }
 
     const question = await this.QuestionRepository.create(new Questions({
