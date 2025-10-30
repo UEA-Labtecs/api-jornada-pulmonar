@@ -11,13 +11,15 @@ Backend da aplicação Jornada Pulmonar, uma plataforma educacional desenvolvida
 - **Passport** - Estratégias de autenticação
 - **Swagger** - Documentação da API
 - **Supabase** - Armazenamento de arquivos (opcional)
+- **Docker** - Containerização
+- **GitHub Actions** - CI/CD
 
 ## 📋 Pré-requisitos
 
-- Node.js (v16 ou superior)
+- Node.js (v21.7.2 ou superior)
 - Yarn ou NPM
 - PostgreSQL (v12 ou superior)
-- Docker e Docker Compose (opcional)
+- Docker (opcional)
 
 ## ⚙️ Configuração
 
@@ -26,7 +28,7 @@ Backend da aplicação Jornada Pulmonar, uma plataforma educacional desenvolvida
 ```bash
 # Clone o repositório
 git clone <repository-url>
-cd jornada-pulmonar-backend
+cd api-jornada-pulmonar
 
 # Instale as dependências
 yarn install
@@ -58,10 +60,9 @@ PORT=3000
 # CORS
 ALLOWED_ORIGINS="http://localhost:19006,http://localhost:8081"
 
-# Firebase (opcional - para push notifications)
-FIREBASE_PROJECT_ID="seu-projeto-id"
-FIREBASE_PRIVATE_KEY="sua-chave-privada"
-FIREBASE_CLIENT_EMAIL="seu-email-cliente"
+# Supabase (opcional)
+SUPABASE_URL="https://your-project.supabase.co"
+SUPABASE_KEY="your-supabase-anon-key"
 ```
 
 **⚠️ Importante:** 
@@ -104,14 +105,14 @@ yarn start:prod
 ### Docker
 
 ```bash
-# Inicie com Docker Compose
+# Build da imagem
+docker build -t api-jornada-pulmonar .
+
+# Executar container
+docker run -p 3000:3000 --env-file .env api-jornada-pulmonar
+
+# Ou usar docker-compose
 docker-compose up -d
-
-# Visualize os logs
-docker-compose logs -f
-
-# Pare os containers
-docker-compose down
 ```
 
 ## 📚 Documentação da API
@@ -153,9 +154,6 @@ yarn test
 # Testes com cobertura
 yarn test:cov
 
-# Testes e2e
-yarn test:e2e
-
 # Testes em modo watch
 yarn test:watch
 ```
@@ -194,64 +192,64 @@ npx prisma migrate reset
 
 Para ver todos os endpoints, acesse a documentação Swagger.
 
-## 🚢 Deploy e CI/CD
+## 🚢 CI/CD
 
-Este projeto está configurado para deploy automatizado em Kubernetes com GitHub Actions.
+O projeto utiliza GitHub Actions para integração e entrega contínua.
 
-### 📦 Deploy em Produção
+### Pipeline Automático
 
-Para instruções completas de deployment, consulte: **[DEPLOYMENT.md](DEPLOYMENT.md)**
+A cada push para `main` ou `develop`:
 
-#### Quick Start
+1. ✅ **Testes e Lint** - Valida qualidade do código
+2. ✅ **Build Docker** - Cria imagem otimizada
+3. ✅ **Push para GHCR** - Publica no GitHub Container Registry
 
+### Como Usar
+
+**1. Habilitar GitHub Container Registry:**
+- Vá em: `Settings → Actions → General → Workflow permissions`
+- Selecione: "Read and write permissions"
+
+**2. Push para main ou develop:**
 ```bash
-# 1. Configure o servidor (apenas uma vez)
-sudo bash scripts/setup-k8s-server.sh
-
-# 2. Configure as secrets
-bash scripts/create-secrets.sh
-
-# 3. Faça o deploy
-bash scripts/deploy.sh
+git add .
+git commit -m "feat: nova funcionalidade"
+git push origin main
 ```
 
-### 🔄 CI/CD Automático
+**3. Acompanhar pipeline:**
+- Acesse: `Actions` no GitHub
+- Veja o progresso do build
 
-O projeto possui pipeline CI/CD configurado que executa automaticamente:
-
-✅ Testes e linting  
-✅ Build da imagem Docker  
-✅ Push para GitHub Container Registry  
-✅ Deploy automático no Kubernetes  
-
-Para ativar:
-
-1. Configure o secret `KUBE_CONFIG` no GitHub
-2. Faça push para `main`
-3. Acompanhe o deploy no GitHub Actions
-
-### 🎯 Scripts Úteis
+### Puxar Imagem
 
 ```bash
-bash scripts/deploy.sh      # Deploy manual
-bash scripts/rollback.sh    # Rollback para versão anterior
-bash scripts/logs.sh        # Ver logs em tempo real
+# Imagem da branch main (latest)
+docker pull ghcr.io/seu-usuario/api-jornada-pulmonar:latest
+
+# Imagem da branch develop
+docker pull ghcr.io/seu-usuario/api-jornada-pulmonar:develop
+
+# Imagem de commit específico
+docker pull ghcr.io/seu-usuario/api-jornada-pulmonar:main-abc1234
 ```
 
-### 📋 Recursos
+### Executar Imagem
 
-- **Kubernetes manifests:** `k8s/`
-- **GitHub Actions:** `.github/workflows/`
-- **Templates reutilizáveis:** `templates/`
-- **Scripts de automação:** `scripts/`
-
-Para mais detalhes, consulte a [documentação completa de deployment](DEPLOYMENT.md).
+```bash
+docker run -d \
+  -p 3000:3000 \
+  -e DATABASE_URL="postgresql://..." \
+  -e JWT_SECRET="..." \
+  --name api-jornada-pulmonar \
+  ghcr.io/seu-usuario/api-jornada-pulmonar:latest
+```
 
 ## 🤝 Contribuindo
 
 1. Faça um fork do projeto
 2. Crie uma branch para sua feature (`git checkout -b feature/MinhaFeature`)
-3. Commit suas mudanças (`git commit -m 'Adiciona MinhaFeature'`)
+3. Commit suas mudanças (`git commit -m 'feat: adiciona MinhaFeature'`)
 4. Push para a branch (`git push origin feature/MinhaFeature`)
 5. Abra um Pull Request
 
