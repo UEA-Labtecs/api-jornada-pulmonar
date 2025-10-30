@@ -131,9 +131,9 @@ jobs:
           docker run -d \
             --name api-jornada-pulmonar \
             --restart unless-stopped \
-            -p ${{ env.PORT }}:${{ env.PORT }} \
+            -p ${{ vars.PORT }}:${{ vars.PORT }} \
             -e NODE_ENV=production \
-            -e PORT=${{ env.PORT }} \
+            -e PORT=${{ vars.PORT }} \
             -e DATABASE_URL="${{ secrets.DATABASE_URL }}" \
             -e JWT_SECRET="${{ secrets.JWT_SECRET }}" \
             ${{ env.REGISTRY }}/${{ env.IMAGE_NAME }}:latest
