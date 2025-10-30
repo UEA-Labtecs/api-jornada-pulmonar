@@ -99,6 +99,74 @@ jobs:
           echo "🏷️  Tags: ${{ steps.meta.outputs.tags }}"
           echo "🔨 Commit: ${{ github.sha }}"
           echo "🌿 Branch: ${{ github.ref_name }}"
+
+  deploy:
+    name: Deploy to Server
+    runs-on: ubuntu-latest
+    needs: build-and-push
+    if: github.event_name == 'push' && github.ref == 'refs/heads/main'
+    
+    steps:
+      - name: Deploy via SSH
+        uses: appleboy/ssh-action@v1.0.0
+        with:
+          host: ${{ secrets.SSH_HOST }}
+          username: ${{ secrets.SSH_USER }}
+          key: ${{ secrets.SSH_PRIVATE_KEY }}
+          port: ${{ secrets.SSH_PORT || 22 }}
+          script: |
+            # Login no GitHub Container Registry
+            echo ${{ secrets.GITHUB_TOKEN }} | docker login ghcr.io -u ${{ github.actor }} --password-stdin
+            
+            # Parar e remover container anterior
+            docker stop api-jornada-pulmonar 2>/dev/null || true
+            docker rm api-jornada-pulmonar 2>/dev/null || true
+            
+            # Puxar nova imagem
+            docker pull ${{ env.REGISTRY }}/${{ env.IMAGE_NAME }}:latest
+            
+            # Iniciar novo container com variáveis do GitHub Secrets
+            docker run -d \
+              --name api-jornada-pulmonar \
+              --restart unless-stopped \
+              -p 3000:3000 \
+              -e NODE_ENV=production \
+              -e PORT=3000 \
+              -e DATABASE_URL="${{ secrets.DATABASE_URL }}" \
+              -e JWT_SECRET="${{ secrets.JWT_SECRET }}" \
+              ${{ env.REGISTRY }}/${{ env.IMAGE_NAME }}:latest
+            
+            # Aguardar container iniciar
+            sleep 10
+            
+            # Verificar se está rodando
+            if docker ps | grep -q api-jornada-pulmonar; then
+              echo "✅ Container iniciado com sucesso"
+              docker ps --filter name=api-jornada-pulmonar
+            else
+              echo "❌ Falha ao iniciar container"
+              docker logs api-jornada-pulmonar
+              exit 1
+            fi
+      
+      - name: Cleanup old images
+        if: success()
+        uses: appleboy/ssh-action@v1.0.0
+        with:
+          host: ${{ secrets.SSH_HOST }}
+          username: ${{ secrets.SSH_USER }}
+          key: ${{ secrets.SSH_PRIVATE_KEY }}
+          port: ${{ secrets.SSH_PORT || 22 }}
+          script: |
+            # Remover imagens antigas não utilizadas
+            docker image prune -af --filter "until=24h" || true
+      
+      - name: Deployment Summary
+        if: success()
+        run: |
+          echo "🚀 Deploy realizado com sucesso!"
           echo ""
-          echo "Pull command:"
-          echo "docker pull ${{ env.REGISTRY }}/${{ env.IMAGE_NAME }}:${{ github.ref_name }}"
+          echo "📦 Image: ${{ env.REGISTRY }}/${{ env.IMAGE_NAME }}:latest"
+          echo "🖥️  Server: ${{ secrets.SSH_HOST }}"
+          echo "🔨 Commit: ${{ github.sha }}"
+          echo "👤 Author: ${{ github.actor }}"
