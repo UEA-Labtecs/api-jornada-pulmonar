@@ -47,7 +47,7 @@ jobs:
         env:
           PORT_API_PULMAO: ${{ vars.PORT_API_PULMAO }}
       
-      - name: Test Secrets (without exposing values)
+      - name: Test Secrets (WITHOUT exposing values)
         run: |
           echo "========================================="
           echo "🔐 SECRETS (comprimento sem expor valor)"
@@ -76,6 +76,32 @@ jobs:
           
           echo ""
         env:
+          DATABASE_URL: ${{ secrets.DATABASE_URL }}
+          JWT_SECRET: ${{ secrets.JWT_SECRET }}
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+      
+      - name: 🚨 DEBUG - MOSTRAR VALORES (REMOVER DEPOIS!)
+        run: |
+          echo "========================================="
+          echo "🚨 ATENÇÃO: VALORES REAIS (PERIGOSO!)"
+          echo "========================================="
+          echo ""
+          echo "⚠️  DELETE ESTE STEP APÓS O DEBUG!"
+          echo ""
+          echo "PORT_API_PULMAO:"
+          echo "${PORT_API_PULMAO}"
+          echo ""
+          echo "DATABASE_URL:"
+          echo "${DATABASE_URL}"
+          echo ""
+          echo "JWT_SECRET:"
+          echo "${JWT_SECRET}"
+          echo ""
+          echo "GITHUB_TOKEN (primeiros 10 caracteres):"
+          echo "${GITHUB_TOKEN:0:10}..."
+          echo ""
+        env:
+          PORT_API_PULMAO: ${{ vars.PORT_API_PULMAO }}
           DATABASE_URL: ${{ secrets.DATABASE_URL }}
           JWT_SECRET: ${{ secrets.JWT_SECRET }}
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
