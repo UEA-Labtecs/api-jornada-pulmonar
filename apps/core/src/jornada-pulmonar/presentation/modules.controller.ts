@@ -15,8 +15,8 @@ import { ApiTags } from '@nestjs/swagger';
 import { IsPublic } from '../../auth/decorators/is-public.decorator';
 import { JwtAuthGuard } from '../../auth/guards/jwt-auth.guard';
 import { makeCreateModuleController } from '../infra/modules/make-create-modules-controller.factory';
-import { makeGetAllModuleController } from '../infra/modules/make-create-modules-controller.factory copy';
 import { makeDeleteModulesController } from '../infra/modules/make-delete-modules-controller.factory';
+import { makeGetAllModuleController } from '../infra/modules/make-get-all-modules-controller.factory';
 import { makeUpdateModuleController } from '../infra/modules/make-update-module-controller.factory';
 
 @ApiTags('Modules')
