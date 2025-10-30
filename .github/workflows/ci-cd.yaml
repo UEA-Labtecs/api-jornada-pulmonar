@@ -155,9 +155,6 @@ jobs:
             exit 1
           fi
           
-          # Definir porta (padrão 3000)
-          PORT="${PORT_API_PULMAO:-3000}"
-          
           echo "🚀 Iniciando container na porta ${PORT}"
           
           docker run -d \
