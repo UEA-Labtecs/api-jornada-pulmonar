@@ -115,9 +115,9 @@ jobs:
 
       - name: Debug environment
         run: |
-          echo "DATABASE_URL=${{ secrets.DATABASE_URL}}"
-          echo "JWT_SECRET=${{ secrets.JWT_SECRET }}"
-          echo "PORT=${PORT}"
+          echo "DATABASE_URL exists: ${{ secrets.DATABASE_URL != '' }}"
+          echo "JWT_SECRET exists: ${{ secrets.JWT_SECRET != '' }}"
+          echo "PORT_API_PULMAO: ${{ vars.PORT_API_PULMAO }}"
 
       - name: Login to GitHub Container Registry
         run: |
@@ -135,6 +135,8 @@ jobs:
       - name: Start new container
         run: |
           PORT="${{ vars.PORT_API_PULMAO }}"
+          
+          echo "🚀 Iniciando container na porta ${PORT}"
           
           docker run -d \
             --name api-jornada-pulmonar \
