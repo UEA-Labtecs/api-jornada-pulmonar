@@ -123,7 +123,7 @@ jobs:
         env:
           DATABASE_URL: ${{ secrets.DATABASE_URL }}
           JWT_SECRET: ${{ secrets.JWT_SECRET }}
-          PORT_API_PULMAO: ${{ vars.PORT_API_PULMAO }}
+          PORT: ${{ vars.PORT_API_PULMAO }}
 
       - name: Login to GitHub Container Registry
         run: |
@@ -142,7 +142,7 @@ jobs:
         env:
           DATABASE_URL: ${{ secrets.DATABASE_URL }}
           JWT_SECRET: ${{ secrets.JWT_SECRET }}
-          PORT_API_PULMAO: ${{ vars.PORT_API_PULMAO }}
+          PORT: ${{ vars.PORT_API_PULMAO }}
         run: |
           # Validar se secrets existem
           if [ -z "$DATABASE_URL" ]; then
