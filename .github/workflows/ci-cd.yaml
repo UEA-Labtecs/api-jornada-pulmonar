@@ -113,6 +113,12 @@ jobs:
       - name: Normalize image name (lowercase)
         run: echo "IMAGE_NAME=$(echo '${{ github.repository }}' | tr '[:upper:]' '[:lower:]')" >> $GITHUB_ENV
 
+      - name: Debug environment
+        run: |
+          echo "DATABASE_URL=${{ secrets.DATABASE_URL:+[OK]}}"
+          echo "JWT_SECRET=${{ secrets.JWT_SECRET:+[OK]}}"
+          echo "PORT=${{ vars.PORT }}"
+          
       - name: Login to GitHub Container Registry
         run: |
           echo ${{ secrets.GITHUB_TOKEN }} | docker login ghcr.io -u ${{ github.actor }} --password-stdin
