@@ -1,0 +1,175 @@
+name: Test Environment Variables
+
+on:
+  workflow_dispatch:  # Pode executar manualmente
+  push:
+    branches:
+      - test-env  # Ou faça push para essa branch
+
+jobs:
+  test-secrets-and-vars:
+    name: Test Secrets & Variables
+    runs-on: self-hosted
+    
+    steps:
+      - name: Environment Info
+        run: |
+          echo "========================================="
+          echo "🔍 INFORMAÇÕES DO AMBIENTE"
+          echo "========================================="
+          echo "Runner: $(hostname)"
+          echo "User: $(whoami)"
+          echo "Working Directory: $(pwd)"
+          echo "Date: $(date)"
+          echo ""
+      
+      - name: GitHub Context
+        run: |
+          echo "========================================="
+          echo "📦 GITHUB CONTEXT"
+          echo "========================================="
+          echo "Repository: ${{ github.repository }}"
+          echo "Actor: ${{ github.actor }}"
+          echo "Ref: ${{ github.ref }}"
+          echo "SHA: ${{ github.sha }}"
+          echo "Event: ${{ github.event_name }}"
+          echo ""
+      
+      - name: Test Variables (vars)
+        run: |
+          echo "========================================="
+          echo "⚙️  VARIÁVEIS (vars)"
+          echo "========================================="
+          echo "PORT_API_PULMAO: ${PORT_API_PULMAO}"
+          echo "PORT_API_PULMAO exists: ${PORT_API_PULMAO:+YES}"
+          echo "PORT_API_PULMAO is empty: ${PORT_API_PULMAO:-YES}"
+          echo ""
+        env:
+          PORT_API_PULMAO: ${{ vars.PORT_API_PULMAO }}
+      
+      - name: Test Secrets (without exposing values)
+        run: |
+          echo "========================================="
+          echo "🔐 SECRETS (comprimento sem expor valor)"
+          echo "========================================="
+          
+          # DATABASE_URL
+          if [ -z "$DATABASE_URL" ]; then
+            echo "DATABASE_URL: ❌ VAZIO"
+          else
+            echo "DATABASE_URL: ✅ Configurado (${#DATABASE_URL} caracteres)"
+          fi
+          
+          # JWT_SECRET
+          if [ -z "$JWT_SECRET" ]; then
+            echo "JWT_SECRET: ❌ VAZIO"
+          else
+            echo "JWT_SECRET: ✅ Configurado (${#JWT_SECRET} caracteres)"
+          fi
+          
+          # GITHUB_TOKEN
+          if [ -z "$GITHUB_TOKEN" ]; then
+            echo "GITHUB_TOKEN: ❌ VAZIO"
+          else
+            echo "GITHUB_TOKEN: ✅ Configurado (${#GITHUB_TOKEN} caracteres)"
+          fi
+          
+          echo ""
+        env:
+          DATABASE_URL: ${{ secrets.DATABASE_URL }}
+          JWT_SECRET: ${{ secrets.JWT_SECRET }}
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+      
+      - name: Test Direct Access
+        run: |
+          echo "========================================="
+          echo "🔬 TESTE DE ACESSO DIRETO"
+          echo "========================================="
+          echo "Testando acesso direto aos secrets..."
+          echo ""
+          
+          # Teste 1: Via expressão do GitHub
+          echo "Teste 1 - Via GitHub Expression:"
+          echo "DATABASE_URL via expression: ${{ secrets.DATABASE_URL != '' && 'EXISTS' || 'EMPTY' }}"
+          echo "JWT_SECRET via expression: ${{ secrets.JWT_SECRET != '' && 'EXISTS' || 'EMPTY' }}"
+          echo ""
+          
+          # Teste 2: Via variável de ambiente
+          echo "Teste 2 - Via Environment Variable:"
+          [ -n "$TEST_DB" ] && echo "DATABASE_URL: EXISTS" || echo "DATABASE_URL: EMPTY"
+          [ -n "$TEST_JWT" ] && echo "JWT_SECRET: EXISTS" || echo "JWT_SECRET: EMPTY"
+          echo ""
+        env:
+          TEST_DB: ${{ secrets.DATABASE_URL }}
+          TEST_JWT: ${{ secrets.JWT_SECRET }}
+      
+      - name: Check Docker
+        run: |
+          echo "========================================="
+          echo "🐳 DOCKER"
+          echo "========================================="
+          echo "Docker version:"
+          docker --version || echo "❌ Docker não encontrado"
+          echo ""
+          echo "Docker running:"
+          docker ps 2>/dev/null || echo "❌ Não consegue conectar ao Docker"
+          echo ""
+      
+      - name: List All Environment Variables (filtered)
+        run: |
+          echo "========================================="
+          echo "📋 VARIÁVEIS DE AMBIENTE (filtradas)"
+          echo "========================================="
+          env | grep -E "^(GITHUB_|RUNNER_|PORT|NODE)" | sort
+          echo ""
+      
+      - name: Summary
+        run: |
+          echo "========================================="
+          echo "📊 RESUMO"
+          echo "========================================="
+          
+          ISSUES=0
+          
+          # Check PORT
+          if [ -z "$PORT_API_PULMAO" ]; then
+            echo "⚠️  PORT_API_PULMAO não está configurado (usará fallback 3000)"
+          else
+            echo "✅ PORT_API_PULMAO: OK"
+          fi
+          
+          # Check DATABASE_URL
+          if [ -z "$DATABASE_URL" ]; then
+            echo "❌ DATABASE_URL não está configurado!"
+            ISSUES=$((ISSUES + 1))
+          else
+            echo "✅ DATABASE_URL: OK"
+          fi
+          
+          # Check JWT_SECRET
+          if [ -z "$JWT_SECRET" ]; then
+            echo "❌ JWT_SECRET não está configurado!"
+            ISSUES=$((ISSUES + 1))
+          else
+            echo "✅ JWT_SECRET: OK"
+          fi
+          
+          echo ""
+          echo "========================================="
+          if [ $ISSUES -eq 0 ]; then
+            echo "✅ TUDO OK! Pronto para deploy."
+            exit 0
+          else
+            echo "❌ $ISSUES problema(s) encontrado(s)!"
+            echo ""
+            echo "🔧 Como resolver:"
+            echo "1. Vá em: Settings → Secrets and variables → Actions"
+            echo "2. Adicione os secrets faltantes na aba 'Secrets'"
+            echo "3. Execute este workflow novamente"
+            exit 1
+          fi
+        env:
+          PORT_API_PULMAO: ${{ vars.PORT_API_PULMAO }}
+          DATABASE_URL: ${{ secrets.DATABASE_URL }}
+          JWT_SECRET: ${{ secrets.JWT_SECRET }}
+
