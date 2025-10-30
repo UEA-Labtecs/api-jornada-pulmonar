@@ -1,20 +1,54 @@
-# Use a imagem oficial do Node.js como base
-FROM node:21.7.2
+# ============================================
+# Stage 1: Build
+# ============================================
+FROM node:21.7.2-alpine AS builder
 
-# Defina o diretório de trabalho no contêiner
 WORKDIR /app
 
-# Copie o arquivo package.json e package-lock.json para o diretório de trabalho
-COPY package*.json ./
+# Copie arquivos de dependências
+COPY package.json yarn.lock ./
 
-# Instale as dependências do aplicativo
-RUN yarn 
+# Instale dependências
+RUN yarn install --frozen-lockfile
 
-# Copie o restante do código-fonte para o diretório de trabalho
+# Copie o código fonte
 COPY . .
 
-# Exponha a porta para acessar o aplicativo
-EXPOSE ${PORT}
+# Gere o Prisma Client
+RUN npx prisma generate
 
-# Comando para iniciar a aplicação
-CMD [ "yarn", "start" ]
+# Build da aplicação
+RUN yarn build
+
+# ============================================
+# Stage 2: Production
+# ============================================
+FROM node:21.7.2-alpine AS production
+
+WORKDIR /app
+
+# Copie apenas as dependências de produção
+COPY package.json yarn.lock ./
+RUN yarn install --frozen-lockfile --production && yarn cache clean
+
+# Copie o build e os arquivos necessários
+COPY --from=builder /app/dist ./dist
+COPY --from=builder /app/node_modules/.prisma ./node_modules/.prisma
+COPY --from=builder /app/prisma ./prisma
+
+# Crie usuário não-root para segurança
+RUN addgroup -g 1001 -S nodejs && \
+  adduser -S nestjs -u 1001 && \
+  chown -R nestjs:nodejs /app
+
+USER nestjs
+
+# Exponha a porta
+EXPOSE 3000
+
+# Health check
+HEALTHCHECK --interval=30s --timeout=3s --start-period=40s --retries=3 \
+  CMD node -e "require('http').get('http://localhost:3000/health', (r) => {process.exit(r.statusCode === 200 ? 0 : 1)})"
+
+# Comando de inicialização
+CMD ["node", "dist/apps/core/main.js"]

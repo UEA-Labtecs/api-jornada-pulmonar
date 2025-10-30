@@ -1,0 +1,62 @@
+name: Manual Deploy
+
+on:
+  workflow_dispatch:
+    inputs:
+      environment:
+        description: 'Environment to deploy to'
+        required: true
+        default: 'production'
+        type: choice
+        options:
+          - production
+          - staging
+      image_tag:
+        description: 'Docker image tag to deploy (default: latest)'
+        required: false
+        default: 'latest'
+
+env:
+  REGISTRY: ghcr.io
+  IMAGE_NAME: ${{ github.repository }}
+
+jobs:
+  manual-deploy:
+    name: Manual Deploy to ${{ inputs.environment }}
+    runs-on: ubuntu-latest
+    
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+      
+      - name: Set up kubectl
+        uses: azure/setup-kubectl@v3
+        with:
+          version: 'latest'
+      
+      - name: Configure kubectl
+        run: |
+          mkdir -p $HOME/.kube
+          echo "${{ secrets.KUBE_CONFIG }}" | base64 -d > $HOME/.kube/config
+          chmod 600 $HOME/.kube/config
+      
+      - name: Deploy to Kubernetes
+        run: |
+          echo "🚀 Deploying to ${{ inputs.environment }} with tag ${{ inputs.image_tag }}"
+          
+          kubectl set image deployment/api-jornada-pulmonar \
+            api=${{ env.REGISTRY }}/${{ env.IMAGE_NAME }}:${{ inputs.image_tag }} \
+            -n jornada-pulmonar
+          
+          kubectl rollout status deployment/api-jornada-pulmonar -n jornada-pulmonar --timeout=5m
+      
+      - name: Verify deployment
+        run: |
+          kubectl get pods -n jornada-pulmonar
+          kubectl describe deployment api-jornada-pulmonar -n jornada-pulmonar
+      
+      - name: Get deployment URL
+        run: |
+          echo "✅ Deployment completed successfully!"
+          echo "Service URL: https://api-jornada-pulmonar.seu-dominio.com.br"
+

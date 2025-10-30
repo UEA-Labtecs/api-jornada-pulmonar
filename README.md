@@ -194,6 +194,59 @@ npx prisma migrate reset
 
 Para ver todos os endpoints, acesse a documentação Swagger.
 
+## 🚢 Deploy e CI/CD
+
+Este projeto está configurado para deploy automatizado em Kubernetes com GitHub Actions.
+
+### 📦 Deploy em Produção
+
+Para instruções completas de deployment, consulte: **[DEPLOYMENT.md](DEPLOYMENT.md)**
+
+#### Quick Start
+
+```bash
+# 1. Configure o servidor (apenas uma vez)
+sudo bash scripts/setup-k8s-server.sh
+
+# 2. Configure as secrets
+bash scripts/create-secrets.sh
+
+# 3. Faça o deploy
+bash scripts/deploy.sh
+```
+
+### 🔄 CI/CD Automático
+
+O projeto possui pipeline CI/CD configurado que executa automaticamente:
+
+✅ Testes e linting  
+✅ Build da imagem Docker  
+✅ Push para GitHub Container Registry  
+✅ Deploy automático no Kubernetes  
+
+Para ativar:
+
+1. Configure o secret `KUBE_CONFIG` no GitHub
+2. Faça push para `main`
+3. Acompanhe o deploy no GitHub Actions
+
+### 🎯 Scripts Úteis
+
+```bash
+bash scripts/deploy.sh      # Deploy manual
+bash scripts/rollback.sh    # Rollback para versão anterior
+bash scripts/logs.sh        # Ver logs em tempo real
+```
+
+### 📋 Recursos
+
+- **Kubernetes manifests:** `k8s/`
+- **GitHub Actions:** `.github/workflows/`
+- **Templates reutilizáveis:** `templates/`
+- **Scripts de automação:** `scripts/`
+
+Para mais detalhes, consulte a [documentação completa de deployment](DEPLOYMENT.md).
+
 ## 🤝 Contribuindo
 
 1. Faça um fork do projeto

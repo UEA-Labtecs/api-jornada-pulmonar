@@ -34,11 +34,35 @@ lerna-debug.log*
 !.vscode/launch.json
 !.vscode/extensions.json
 
-# Environment variables
+# Environment
 .env
-.env.local
-.env.*.local
+.env.*
+!.env.example
 
 # Prisma
-prisma/dev.db
-prisma/dev.db-journal
+/prisma/migrations/**/migration.sql.bak
+
+# Build
+build/
+dist/
+
+# Docker
+.dockerignore
+
+# Kubernetes e Scripts (movidos para infrastructure)
+k8s/
+scripts/
+*.old
+
+# Uploads
+uploads/
+temp/
+
+# Database
+*.db
+*.sqlite
+
+# Archives
+*.zip
+*.tar.gz
+*.rar
