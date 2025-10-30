@@ -128,12 +128,15 @@ jobs:
       
       - name: Start new container
         run: |
+          PORT="${{ vars.PORT }}"
+          PORT=${PORT:-3000}
+          
           docker run -d \
             --name api-jornada-pulmonar \
             --restart unless-stopped \
-            -p ${{ vars.PORT }}:${{ vars.PORT }} \
+            -p ${PORT}:${PORT} \
             -e NODE_ENV=production \
-            -e PORT=${{ vars.PORT }} \
+            -e PORT=${PORT} \
             -e DATABASE_URL="${{ secrets.DATABASE_URL }}" \
             -e JWT_SECRET="${{ secrets.JWT_SECRET }}" \
             ${{ env.REGISTRY }}/${{ env.IMAGE_NAME }}:latest
