@@ -1,4 +1,4 @@
-import { IBaseEntity } from "@lib/database";
+import { IBaseEntity } from '@lib/database';
 
 export class UserResponses extends IBaseEntity {
   userId: string;

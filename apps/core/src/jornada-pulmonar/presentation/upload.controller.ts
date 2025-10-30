@@ -14,7 +14,6 @@ import { makeListFileController } from '../infra/upload/make-list-file-controlle
 
 @Controller('upload')
 export class UploadController {
-
   @IsPublic()
   @Post('/')
   @UseInterceptors(FileInterceptor('file'))

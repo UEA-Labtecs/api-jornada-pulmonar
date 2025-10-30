@@ -5,8 +5,6 @@ import { QuestionRepository } from '../../jornada-pulmonar/application/questions
 @Module({
   imports: [],
   controllers: [QuestionController],
-  providers: [
-    QuestionRepository
-  ],
+  providers: [QuestionRepository],
 })
-export class QuestionModule { }
+export class QuestionModule {}

@@ -5,10 +5,7 @@ import { UserResponsesController } from '../../jornada-pulmonar/presentation/use
 
 @Module({
   controllers: [UserResponsesController],
-  providers: [
-    UserResponsesRepository,
-    UserResponsesUseCase,
-  ],
+  providers: [UserResponsesRepository, UserResponsesUseCase],
   exports: [UserResponsesRepository, UserResponsesUseCase],
 })
-export class UserResponsesModule { }
+export class UserResponsesModule {}

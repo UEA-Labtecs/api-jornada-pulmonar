@@ -1,7 +1,7 @@
-import { IBaseEntity } from "@lib/database";
-import { Options } from "../options/options.entity";
-import { Modules } from "../modules/modules.entity";
-import { Responses } from "../responses/responses.entity";
+import { IBaseEntity } from '@lib/database';
+import { Options } from '../options/options.entity';
+import { Modules } from '../modules/modules.entity';
+import { Responses } from '../responses/responses.entity';
 
 export class Questions extends IBaseEntity {
   title: string;
@@ -12,8 +12,6 @@ export class Questions extends IBaseEntity {
   moduleId?: string;
   module?: Modules;
   response?: Responses;
-  answered?: Boolean;
-  alternatives: any
+  answered?: boolean;
+  alternatives: any;
 }
-
-

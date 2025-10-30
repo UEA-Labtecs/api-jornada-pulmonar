@@ -15,4 +15,3 @@ export class UserResponsesController {
     return await this.userResponsesUseCase.findAllResponse(query);
   }
 }
-

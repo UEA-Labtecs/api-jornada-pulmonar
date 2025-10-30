@@ -7,7 +7,6 @@
 //   favorite: boolean
 //   status: string
 
-
 //   constructor(task: Questions) {
 //     this.id = task.id
 //     this.title = task.title

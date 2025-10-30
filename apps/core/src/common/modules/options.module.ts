@@ -5,8 +5,6 @@ import { OptionsController } from '../../jornada-pulmonar/presentation/options.c
 @Module({
   imports: [],
   controllers: [OptionsController],
-  providers: [
-    OptionsRepository
-  ],
+  providers: [OptionsRepository],
 })
-export class OptionsModule { }
+export class OptionsModule {}

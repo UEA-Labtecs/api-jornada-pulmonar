@@ -5,9 +5,9 @@ export class UpdateQuestionController {
     private readonly service: QuestionsUseCase,
     private readonly id: string,
     private readonly body: any,
-  ) { }
+  ) {}
   async handle(): Promise<any> {
     const response = await this.service.updateQuestion(this.id, this.body);
-    return response
+    return response;
   }
 }

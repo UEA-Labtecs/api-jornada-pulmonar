@@ -15,5 +15,5 @@ export const ok = (data: HttpRequest): HttpResponse => ({
 });
 
 export const create = (data: HttpRequest): HttpResponse => ({
-  ...data
+  ...data,
 });

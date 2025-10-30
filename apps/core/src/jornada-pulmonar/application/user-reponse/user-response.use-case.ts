@@ -5,28 +5,25 @@ import { UserResponses } from '../../domain/user-responses/user-responses.entity
 
 @Injectable()
 export class UserResponsesUseCase implements IUserResponsesUseCase {
-
-  constructor(
-    private readonly responsesRepository: UserResponsesRepository,
-  ) { }
+  constructor(private readonly responsesRepository: UserResponsesRepository) {}
 
   async createResponse(data: any) {
     //regra de negócio
-    return await this.responsesRepository.create(new UserResponses(data))
-  };
+    return await this.responsesRepository.create(new UserResponses(data));
+  }
 
   async updateResponse(id: string, data: UserResponses) {
     //regra de negócio
-    return await this.responsesRepository.update(id, data)
-  };
+    return await this.responsesRepository.update(id, data);
+  }
 
   async findAllResponse(query): Promise<UserResponses[]> {
     //regra de negócio
-    return this.responsesRepository.findAll(query)
+    return this.responsesRepository.findAll(query);
   }
 
   async deleteResponse(id: string): Promise<void> {
     //regra de negócio
-    return await this.responsesRepository.delete(id)
+    return await this.responsesRepository.delete(id);
   }
 }

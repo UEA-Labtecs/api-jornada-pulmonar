@@ -1,21 +1,29 @@
-import { Controller, Get, Param, Post, Body, UsePipes, ValidationPipe, UseGuards, UseInterceptors, UploadedFile, Query, Patch } from '@nestjs/common';
+import {
+  Body,
+  Controller,
+  Get,
+  Param,
+  Post,
+  Query,
+  UseGuards,
+  UsePipes,
+  ValidationPipe,
+} from '@nestjs/common';
 import { ApiTags } from '@nestjs/swagger';
-import { makeCreateUsersController } from '../infra/users/make-create-users-controller.factory';
-import { makeFindByEmailUsersController } from '../infra/users/make-find-by-email-users-controller.factory';
 import { IsPublic } from '../../auth/decorators/is-public.decorator';
 import { JwtAuthGuard } from '../../auth/guards/jwt-auth.guard';
+import { makeCreateUsersController } from '../infra/users/make-create-users-controller.factory';
+import { makeFindByEmailUsersController } from '../infra/users/make-find-by-email-users-controller.factory';
 import { makeRankingUsersController } from '../infra/users/make-ranking-users-controller.factory';
 import { makeVerifyUserController } from '../infra/users/make-verify-response-controller.factory';
 // import { FileInterceptor } from '@nestjs/platform-express';
 // import { FileDTO } from './dto/upload.dto';
 // import { makeAddImgUsersController } from '../infra/users/make-add-img-users-controller.factory';
 
-
 @ApiTags('Users')
 @UsePipes(new ValidationPipe({ forbidNonWhitelisted: true, whitelist: true }))
 @Controller('users')
 export class UsersController {
-
   @IsPublic()
   @Post()
   create(@Body() body?: any) {
@@ -55,10 +63,9 @@ export class UsersController {
     @Param('optionId') optionId: string,
     @Param('questionId') questionId: string,
     @Param('userId') userId: string,
-    @Param('time') time: number
+    @Param('time') time: number,
   ) {
     const verify = makeVerifyUserController(optionId, questionId, userId, time);
     return verify.handle();
   }
 }
-

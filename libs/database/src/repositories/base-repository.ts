@@ -4,7 +4,9 @@ import { IBaseEntity } from '../types/base-entity';
 
 const prisma = new PrismaClient();
 
-export class BaseRepository<T extends IBaseEntity> implements BaseRepositoryAdapter<T> {
+export class BaseRepository<T extends IBaseEntity>
+  implements BaseRepositoryAdapter<T>
+{
   private model: Prisma.ModelName;
 
   constructor(model: Prisma.ModelName) {
@@ -18,7 +20,10 @@ export class BaseRepository<T extends IBaseEntity> implements BaseRepositoryAdap
     return createdItem as T;
   }
 
-  async findById(id: string | number, includeRelations?: string[]): Promise<T | null> {
+  async findById(
+    id: string | number,
+    includeRelations?: string[],
+  ): Promise<T | null> {
     const includeObject: Record<string, boolean> = {};
 
     if (includeRelations) {
@@ -34,8 +39,6 @@ export class BaseRepository<T extends IBaseEntity> implements BaseRepositoryAdap
 
     return item as T | null;
   }
-
-
 
   async update(id: string, data: T): Promise<T | null> {
     const updatedItem = await prisma[this.model].update({
@@ -53,13 +56,17 @@ export class BaseRepository<T extends IBaseEntity> implements BaseRepositoryAdap
   }
 
   async delete(id: string | number): Promise<void> {
-    console.log("=========>", this.model)
+    console.log('=========>', this.model);
     await prisma[this.model].delete({
       where: { id },
     });
   }
 
-  async findAll(query?: any, includeRelations?: string[], orderBy?: { [key: string]: 'asc' | 'desc' }): Promise<T[]> {
+  async findAll(
+    query?: any,
+    includeRelations?: string[],
+    orderBy?: { [key: string]: 'asc' | 'desc' },
+  ): Promise<T[]> {
     const includeObject: Record<string, boolean> = {};
 
     if (includeRelations) {
@@ -82,5 +89,4 @@ export class BaseRepository<T extends IBaseEntity> implements BaseRepositoryAdap
 
     return foundItems as T[];
   }
-
 }

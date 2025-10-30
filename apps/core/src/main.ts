@@ -5,13 +5,13 @@ import { AppModule } from './common/modules/app.module';
 
 async function bootstrap() {
   const app = await NestFactory.create(AppModule);
-  
+
   // Habilitar CORS para aceitar requisições do mobile
   app.enableCors({
     origin: true,
     credentials: true,
   });
-  
+
   // https://docs.nestjs.com/faq/global-prefix
   app.setGlobalPrefix('api/v1');
 
@@ -31,12 +31,10 @@ async function bootstrap() {
 
   const document = SwaggerModule.createDocument(app, config);
   SwaggerModule.setup('api', app, document);
-  const PORT = process.env.PORT
-  const HOST = '0.0.0.0'
+  const PORT = process.env.PORT;
+  const HOST = '0.0.0.0';
   await app.listen(PORT, () => {
-    console.log(
-      `HTTP server listening at http://${HOST}:${PORT}/`,
-    );
+    console.log(`HTTP server listening at http://${HOST}:${PORT}/`);
   });
 }
 

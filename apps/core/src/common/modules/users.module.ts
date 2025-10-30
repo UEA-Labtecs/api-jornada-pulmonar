@@ -16,8 +16,8 @@ import { UploadsUseCase } from '../../jornada-pulmonar/application/upload/upload
     UsersUseCase,
     UserResponsesUseCase,
     UserResponsesRepository,
-    UploadsUseCase
+    UploadsUseCase,
   ],
-  exports: [UsersUseCase]
+  exports: [UsersUseCase],
 })
-export class UsersModule { }
+export class UsersModule {}

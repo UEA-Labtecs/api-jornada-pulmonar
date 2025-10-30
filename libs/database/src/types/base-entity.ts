@@ -1,12 +1,12 @@
-import { v4 as uuid } from "uuid";
+import { v4 as uuid } from 'uuid';
 
 export class IBaseEntity {
   id: string;
   createdAt: Date;
   updatedAt?: Date | null;
   constructor(
-    props: Omit<IBaseEntity, "id" | "createdAt" | "updatedAt">,
-    id?: string
+    props: Omit<IBaseEntity, 'id' | 'createdAt' | 'updatedAt'>,
+    id?: string,
   ) {
     this.id = id ?? uuid();
     Object.assign(this, props);

@@ -1,19 +1,28 @@
-import { Controller, Get, Param, Post, Patch, Body, UsePipes, ValidationPipe, Query, UseGuards, Delete } from '@nestjs/common';
+import {
+  Body,
+  Controller,
+  Delete,
+  Get,
+  Param,
+  Patch,
+  Post,
+  Query,
+  UseGuards,
+  UsePipes,
+  ValidationPipe,
+} from '@nestjs/common';
 import { ApiTags } from '@nestjs/swagger';
-import { makeCreateModuleController } from '../infra/modules/make-create-modules-controller.factory';
 import { IsPublic } from '../../auth/decorators/is-public.decorator';
-import { LocalAuthGuard } from '../../auth/guards/local-auth.guard';
 import { JwtAuthGuard } from '../../auth/guards/jwt-auth.guard';
+import { makeCreateModuleController } from '../infra/modules/make-create-modules-controller.factory';
 import { makeGetAllModuleController } from '../infra/modules/make-create-modules-controller.factory copy';
-import { makeUpdateModuleController } from '../infra/modules/make-update-module-controller.factory';
 import { makeDeleteModulesController } from '../infra/modules/make-delete-modules-controller.factory';
-
+import { makeUpdateModuleController } from '../infra/modules/make-update-module-controller.factory';
 
 @ApiTags('Modules')
 @UsePipes(new ValidationPipe({ forbidNonWhitelisted: true, whitelist: true }))
 @Controller('modules')
 export class ModulesController {
-
   @UseGuards(JwtAuthGuard)
   @Post()
   create(@Body() body: any) {
@@ -29,7 +38,6 @@ export class ModulesController {
     return create.handle();
   }
 
-
   @IsPublic()
   @UseGuards(JwtAuthGuard)
   @Patch(':id')
@@ -42,8 +50,7 @@ export class ModulesController {
   @UseGuards(JwtAuthGuard)
   @Delete(':id')
   delete(@Param('id') id: string) {
-    const deleted = makeDeleteModulesController(id)
+    const deleted = makeDeleteModulesController(id);
     return deleted.handle();
   }
-
 }

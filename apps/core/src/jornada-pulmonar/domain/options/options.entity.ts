@@ -1,7 +1,5 @@
-import { IBaseEntity } from "@lib/database";
-import { Questions } from "../questions/question.entity";
-
-
+import { IBaseEntity } from '@lib/database';
+import { Questions } from '../questions/question.entity';
 
 export class Options extends IBaseEntity {
   content: string;

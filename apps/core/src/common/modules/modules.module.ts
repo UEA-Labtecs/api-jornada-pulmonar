@@ -5,8 +5,6 @@ import { ModulesController } from '../../jornada-pulmonar/presentation/modules.c
 @Module({
   imports: [],
   controllers: [ModulesController],
-  providers: [
-    ModulesRepository
-  ],
+  providers: [ModulesRepository],
 })
-export class ModulesModule { }
+export class ModulesModule {}

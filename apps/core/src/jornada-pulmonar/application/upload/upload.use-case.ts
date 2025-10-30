@@ -5,7 +5,8 @@ import { createClient } from '@supabase/supabase-js';
 @Injectable()
 export class UploadsUseCase {
   private readonly supabaseURL = 'https://znqjwdtfhhyecxhgrhbe.supabase.co';
-  private readonly supabaseKEY = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6InpucWp3ZHRmaGh5ZWN4aGdyaGJlIiwicm9sZSI6InNlcnZpY2Vfcm9sZSIsImlhdCI6MTcxMTIzMzg1NywiZXhwIjoyMDI2ODA5ODU3fQ.62wfN8UqEHYuswN_Y9dyVHXmn01xkvxmRK9FY3XWUyM';
+  private readonly supabaseKEY =
+    'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6InpucWp3ZHRmaGh5ZWN4aGdyaGJlIiwicm9sZSI6InNlcnZpY2Vfcm9sZSIsImlhdCI6MTcxMTIzMzg1NywiZXhwIjoyMDI2ODA5ODU3fQ.62wfN8UqEHYuswN_Y9dyVHXmn01xkvxmRK9FY3XWUyM';
 
   private readonly supabase = createClient(this.supabaseURL, this.supabaseKEY, {
     auth: {
@@ -33,5 +34,4 @@ export class UploadsUseCase {
 
     return { fileUrl: data.signedUrl };
   }
-
 }

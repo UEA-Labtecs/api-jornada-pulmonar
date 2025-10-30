@@ -1,5 +1,5 @@
-import { IBaseEntity } from "@lib/database";
-import { Modules, UserResponses } from "@prisma/client";
+import { IBaseEntity } from '@lib/database';
+import { Modules, UserResponses } from '@prisma/client';
 
 export class Users extends IBaseEntity {
   id: string;

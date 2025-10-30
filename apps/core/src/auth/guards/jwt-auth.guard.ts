@@ -1,6 +1,10 @@
 // jwt-auth.guard.ts
 
-import { ExecutionContext, Injectable, UnauthorizedException } from '@nestjs/common';
+import {
+  ExecutionContext,
+  Injectable,
+  UnauthorizedException,
+} from '@nestjs/common';
 import { Reflector } from '@nestjs/core';
 import { AuthGuard } from '@nestjs/passport';
 import { IS_PUBLIC_KEY } from '../decorators/is-public.decorator';
@@ -31,8 +35,15 @@ export class JwtAuthGuard extends AuthGuard('jwt') {
     const user = request.user;
 
     // Your roles logic here - modify this according to your token structure
-    const requiredRoles = this.reflector.get<string[]>('teacher', context.getHandler());
-    if (!requiredRoles || !user.role || !user.roles.some(role => requiredRoles.includes(role))) {
+    const requiredRoles = this.reflector.get<string[]>(
+      'teacher',
+      context.getHandler(),
+    );
+    if (
+      !requiredRoles ||
+      !user.role ||
+      !user.roles.some((role) => requiredRoles.includes(role))
+    ) {
       throw new UnauthorizedException('Unauthorized access');
     }
 

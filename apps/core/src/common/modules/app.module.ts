@@ -12,7 +12,16 @@ import { UserResponsesModule } from './userResponses.module';
 import { UploadModule } from './upload.module';
 
 @Module({
-  imports: [QuestionModule, UsersModule, ModulesModule, OptionsModule, ResponsesModule, UserResponsesModule, UploadModule, AuthModule],
+  imports: [
+    QuestionModule,
+    UsersModule,
+    ModulesModule,
+    OptionsModule,
+    ResponsesModule,
+    UserResponsesModule,
+    UploadModule,
+    AuthModule,
+  ],
   providers: [
     AppService,
     {
@@ -21,4 +30,4 @@ import { UploadModule } from './upload.module';
     },
   ],
 })
-export class AppModule { }
+export class AppModule {}

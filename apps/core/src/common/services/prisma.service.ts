@@ -1,5 +1,5 @@
-import { Injectable, OnModuleInit } from '@nestjs/common';
 import { PrismaClient } from '.prisma/client';
+import { Injectable, OnModuleInit } from '@nestjs/common';
 
 @Injectable()
 export class PrismaService extends PrismaClient implements OnModuleInit {
@@ -8,7 +8,7 @@ export class PrismaService extends PrismaClient implements OnModuleInit {
   }
 
   async enableShutdownHooks(app: any) {
-    // @ts-ignore
+    // @ts-expect-error - $on is not typed in PrismaClient
     this.$on('beforeExit', async () => {
       await app.close();
     });
