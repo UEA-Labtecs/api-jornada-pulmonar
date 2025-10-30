@@ -12,7 +12,6 @@ on:
 
 env:
   REGISTRY: ghcr.io
-  IMAGE_NAME: ${{ github.repository | toLowerCase }}
   NODE_VERSION: "21.7.2"
 
 jobs:
@@ -54,6 +53,9 @@ jobs:
     steps:
       - name: Checkout code
         uses: actions/checkout@v4
+
+      - name: Normalize image name (lowercase)
+        run: echo "IMAGE_NAME=$(echo '${{ github.repository }}' | tr '[:upper:]' '[:lower:]')" >> $GITHUB_ENV
       
       - name: Set up Docker Buildx
         uses: docker/setup-buildx-action@v3
@@ -102,7 +104,7 @@ jobs:
 
   deploy:
     name: Deploy to Server
-    runs-on: self-hosted  # Roda no servidor local!
+    runs-on: self-hosted
     needs: build-and-push
     if: github.event_name == 'push' && github.ref == 'refs/heads/main'
     
