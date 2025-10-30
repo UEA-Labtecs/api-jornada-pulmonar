@@ -115,10 +115,10 @@ jobs:
 
       - name: Debug environment
         run: |
-          echo "DATABASE_URL=${{ secrets.DATABASE_URL:+[OK]}}"
-          echo "JWT_SECRET=${{ secrets.JWT_SECRET:+[OK]}}"
-          echo "PORT=${{ vars.PORT }}"
-          
+          echo "DATABASE_URL=${{ secrets.DATABASE_URL}}"
+          echo "JWT_SECRET=${{ secrets.JWT_SECRET }}"
+          echo "PORT=${PORT}"
+
       - name: Login to GitHub Container Registry
         run: |
           echo ${{ secrets.GITHUB_TOKEN }} | docker login ghcr.io -u ${{ github.actor }} --password-stdin
