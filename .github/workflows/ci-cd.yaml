@@ -134,8 +134,7 @@ jobs:
       
       - name: Start new container
         run: |
-          PORT="${{ vars.PORT }}"
-          PORT=${PORT:-3000}
+          PORT="${{ vars.PORT_API_PULMAO }}"
           
           docker run -d \
             --name api-jornada-pulmonar \
