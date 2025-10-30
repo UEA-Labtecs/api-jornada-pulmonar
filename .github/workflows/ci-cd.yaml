@@ -155,14 +155,20 @@ jobs:
             exit 1
           fi
           
-          echo "🚀 Iniciando container na porta ${PORT}"
+          # Definir porta do HOST (externa)
+          HOST_PORT="${PORT:-5001}"
+          # Porta interna do container (fixa em 3000)
+          CONTAINER_PORT=3000
+          
+          echo "🚀 Iniciando container:"
+          echo "   📍 Host: ${HOST_PORT} → Container: ${CONTAINER_PORT}"
           
           docker run -d \
             --name api-jornada-pulmonar \
             --restart unless-stopped \
-            -p ${PORT}:${PORT} \
+            -p ${HOST_PORT}:${CONTAINER_PORT} \
             -e NODE_ENV=production \
-            -e PORT=${PORT} \
+            -e PORT=${CONTAINER_PORT} \
             -e DATABASE_URL="${DATABASE_URL}" \
             -e JWT_SECRET="${JWT_SECRET}" \
             ${{ env.REGISTRY }}/${{ env.IMAGE_NAME }}:latest
